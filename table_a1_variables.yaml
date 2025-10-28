@@ -1,0 +1,372 @@
+# ISMIP6 Projections 2300 Antarctica - Table A1 Variable Definitions
+# Source: https://theghub.org/groups/ismip6/wiki/MainPage/ISMIP6Projections2300Antarctica
+#
+# Note: Bold names or "alias" indicate a change compared to initMIP, to align with CMIP6 official MIPtable "IyrAnt"
+# or names in the CF convention.
+#
+# 2D variables requested yearly as snapshots (end of year) for type ST and as yearly average for type FL
+# Scalar outputs requested every full year: snapshots for type ST and 1 year averages for type FL
+
+variables:
+  # ==================== 2D VARIABLES ====================
+
+  lithk:
+    description: Ice thickness
+    dimensions: x,y,t
+    variable_type: 2D
+    temporal_type: ST
+    standard_name: land_ice_thickness
+    units: m
+    comment: The thickness of the ice sheet
+
+  orog:
+    description: Surface elevation
+    dimensions: x,y,t
+    variable_type: 2D
+    temporal_type: ST
+    standard_name: surface_altitude
+    units: m
+    comment: The altitude or surface elevation of the ice sheet
+
+  base:
+    description: Base elevation
+    dimensions: x,y,t
+    variable_type: 2D
+    temporal_type: ST
+    standard_name: base_altitude
+    units: m
+    comment: The altitude of the lower ice surface elevation of the ice sheet
+
+  topg:
+    description: Bedrock elevation
+    dimensions: x,y,t
+    variable_type: 2D
+    temporal_type: ST
+    standard_name: bedrock_altitude
+    units: m
+    comment: The bedrock topography (may change during the projections)
+
+  hfgeoubed:
+    description: Geothermal heat flux
+    dimensions: x,y,t
+    variable_type: 2D
+    temporal_type: FL
+    standard_name: upward_geothermal_heat_flux_in_land_ice
+    standard_name_alias: upward_geothermal_heat_flux_at_ground_level
+    units: W m-2
+    comment: Geothermal Heat flux at the land ice interface (only needed beneath the grounded ice). If this quantity does not change with time, then a single entry is sufficient
+
+  acabf:
+    description: Surface mass balance flux
+    dimensions: x,y,t
+    variable_type: 2D
+    temporal_type: FL
+    standard_name: land_ice_surface_specific_mass_balance_flux
+    units: kg m-2 s-1
+    comment: Surface Mass Balance flux
+
+  libmassbfgr:
+    description: Basal mass balance flux beneath grounded ice
+    dimensions: x,y,t
+    variable_type: 2D
+    temporal_type: FL
+    alias: libmassbf
+    standard_name: land_ice_basal_specific_mass_balance_flux
+    units: kg m-2 s-1
+    comment: Basal mass balance flux (only beneath grounded ice)
+
+  libmassbffl:
+    description: Basal mass balance flux beneath floating ice
+    dimensions: x,y,t
+    variable_type: 2D
+    temporal_type: FL
+    alias: libmassbf
+    standard_name: land_ice_basal_specific_mass_balance_flux
+    units: kg m-2 s-1
+    comment: Basal mass balance flux (only beneath floating ice)
+
+  dlithkdt:
+    description: Ice thickness imbalance
+    dimensions: x,y,t
+    variable_type: 2D
+    temporal_type: FL
+    standard_name: tendency_of_land_ice_thickness
+    units: m s-1
+    comment: dHdt
+
+  xvelsurf:
+    description: Surface velocity in x
+    dimensions: x,y,t
+    variable_type: 2D
+    temporal_type: ST
+    alias: uvelsurf
+    standard_name: land_ice_surface_x_velocity
+    units: m s-1
+    comment: u-velocity at land ice surface
+
+  yvelsurf:
+    description: Surface velocity in y
+    dimensions: x,y,t
+    variable_type: 2D
+    temporal_type: ST
+    alias: vvelsurf
+    standard_name: land_ice_surface_y_velocity
+    units: m s-1
+    comment: v-velocity at land ice surface
+
+  zvelsurf:
+    description: Surface velocity in z
+    dimensions: x,y,t
+    variable_type: 2D
+    temporal_type: ST
+    alias: wvelsurf
+    standard_name: land_ice_surface_upward_velocity
+    units: m s-1
+    comment: w-velocity at land ice surface
+
+  xvelbase:
+    description: Basal velocity in x
+    dimensions: x,y,t
+    variable_type: 2D
+    temporal_type: ST
+    alias: uvelbase
+    standard_name: land_ice_basal_x_velocity
+    units: m s-1
+    comment: u-velocity at land ice base
+
+  yvelbase:
+    description: Basal velocity in y
+    dimensions: x,y,t
+    variable_type: 2D
+    temporal_type: ST
+    alias: vvelbase
+    standard_name: land_ice_basal_y_velocity
+    units: m s-1
+    comment: v-velocity at land ice base
+
+  zvelbase:
+    description: Basal velocity in z
+    dimensions: x,y,t
+    variable_type: 2D
+    temporal_type: ST
+    alias: wvelbase
+    standard_name: land_ice_basal_upward_velocity
+    units: m s-1
+    comment: w-velocity at land ice base
+
+  xvelmean:
+    description: Mean velocity in x
+    dimensions: x,y,t
+    variable_type: 2D
+    temporal_type: ST
+    alias: uvelmean
+    standard_name: land_ice_vertical_mean_x_velocity
+    units: m s-1
+    comment: The vertical mean land ice velocity is the average from the bedrock to the surface of the ice
+
+  yvelmean:
+    description: Mean velocity in y
+    dimensions: x,y,t
+    variable_type: 2D
+    temporal_type: ST
+    alias: vvelmean
+    standard_name: land_ice_vertical_mean_y_velocity
+    units: m s-1
+    comment: The vertical mean land ice velocity is the average from the bedrock to the surface of the ice
+
+  litemptop:
+    description: Surface temperature
+    dimensions: x,y,t
+    variable_type: 2D
+    temporal_type: ST
+    alias: litempsnic
+    standard_name: temperature_at_top_of_ice_sheet_model
+    standard_name_alias: temperature_at_ground_level_in_snow_or_firn
+    units: K
+    comment: Ice temperature at surface
+
+  litempbotgr:
+    description: Basal temperature beneath grounded ice sheet
+    dimensions: x,y,t
+    variable_type: 2D
+    temporal_type: ST
+    alias: litempbot
+    standard_name: temperature_at_base_of_ice_sheet_model
+    standard_name_alias: land_ice_basal_temperature
+    units: K
+    comment: Ice temperature at base of grounded ice sheet
+
+  litempbotfl:
+    description: Basal temperature beneath floating ice shelf
+    dimensions: x,y,t
+    variable_type: 2D
+    temporal_type: ST
+    alias: litempbot
+    standard_name: temperature_at_base_of_ice_sheet_model
+    standard_name_alias: land_ice_basal_temperature
+    units: K
+    comment: Ice temperature at base of floating ice shelf
+
+  strbasemag:
+    description: Basal drag
+    dimensions: x,y,t
+    variable_type: 2D
+    temporal_type: ST
+    standard_name: land_ice_basal_drag
+    standard_name_alias: magnitude_of_land_ice_basal_drag
+    units: Pa
+    comment: Basal drag
+
+  licalvf:
+    description: Calving flux
+    dimensions: x,y,t
+    variable_type: 2D
+    temporal_type: FL
+    standard_name: land_ice_specific_mass_flux_due_to_calving
+    units: kg m-2 s-1
+    comment: Loss of ice mass resulting from iceberg calving. Only for grid cells in contact with ocean
+
+  lifmassbf:
+    description: Ice front melt and calving flux
+    dimensions: x,y,t
+    variable_type: 2D
+    temporal_type: FL
+    standard_name: land_ice_specific_mass_flux_due_to_calving_and_ice_front_melting
+    units: kg m-2 s-1
+    comment: Loss of ice mass resulting from ice front melting and calving. Only for grid cells in contact with ocean
+
+  ligroundf:
+    description: Grounding line flux
+    dimensions: x,y,t
+    variable_type: 2D
+    temporal_type: FL
+    standard_name: land_ice_specific_mass_flux_at_grounding_line
+    units: kg m-2 s-1
+    comment: Loss of grounded ice mass resulting at grounding line. Only for grid cells in contact with grounding line
+
+  sftgif:
+    description: Land ice area fraction
+    dimensions: x,y,t
+    variable_type: 2D
+    temporal_type: ST
+    standard_name: land_ice_area_fraction
+    units: '1'
+    comment: Fraction of grid cell covered by land ice (ice sheet, ice shelf, ice cap, glacier)
+
+  sftgrf:
+    description: Grounded ice sheet area fraction
+    dimensions: x,y,t
+    variable_type: 2D
+    temporal_type: ST
+    standard_name: grounded_ice_sheet_area_fraction
+    units: '1'
+    comment: Fraction of grid cell covered by grounded ice sheet, where grounded indicates that the quantity correspond to the ice sheet that flows over bedrock
+
+  sftflf:
+    description: Floating ice sheet area fraction
+    dimensions: x,y,t
+    variable_type: 2D
+    temporal_type: ST
+    standard_name: floating_ice_shelf_area_fraction
+    standard_name_alias: floating_ice_sheet_area_fraction
+    units: '1'
+    comment: Fraction of grid cell covered by ice sheet flowing over seawater
+
+  # ==================== SCALAR VARIABLES ====================
+
+  lim:
+    description: Total ice mass
+    dimensions: t
+    variable_type: scalar
+    temporal_type: ST
+    standard_name: land_ice_mass
+    units: kg
+    comment: spatial integration, volume times density
+
+  limnsw:
+    description: Mass above floatation
+    dimensions: t
+    variable_type: scalar
+    temporal_type: ST
+    standard_name: land_ice_mass_not_displacing_sea_water
+    units: kg
+    comment: spatial integration, volume times density
+
+  iareagr:
+    description: Grounded ice area
+    dimensions: t
+    variable_type: scalar
+    temporal_type: ST
+    alias: iareag
+    standard_name: grounded_ice_sheet_area
+    standard_name_alias: grounded_land_ice_area
+    units: m2
+    comment: spatial integration
+
+  iareafl:
+    description: Floating ice area
+    dimensions: t
+    variable_type: scalar
+    temporal_type: ST
+    alias: iareaf
+    standard_name: floating_ice_shelf_area
+    units: m2
+    comment: spatial integration
+
+  tendacabf:
+    description: Total SMB flux
+    dimensions: t
+    variable_type: scalar
+    temporal_type: FL
+    standard_name: tendency_of_land_ice_mass_due_to_surface_mass_balance
+    units: kg s-1
+    comment: spatial integration
+
+  tendlibmassbf:
+    description: Total BMB flux
+    dimensions: t
+    variable_type: scalar
+    temporal_type: FL
+    standard_name: tendency_of_land_ice_mass_due_to_basal_mass_balance
+    units: kg s-1
+    comment: spatial integration
+
+  tendlibmassbffl:
+    description: Total BMB flux beneath floating ice
+    dimensions: t
+    variable_type: scalar
+    temporal_type: FL
+    standard_name: tendency_of_land_ice_mass_due_to_basal_mass_balance
+    units: kg s-1
+    comment: spatial integration (computed beneath floating ice only)
+
+  tendlicalvf:
+    description: Total calving flux
+    dimensions: t
+    variable_type: scalar
+    temporal_type: FL
+    standard_name: tendency_of_land_ice_mass_due_to_calving
+    units: kg s-1
+    comment: spatial integration
+
+  tendlifmassbf:
+    description: Total calving and ice front melting flux
+    dimensions: t
+    variable_type: scalar
+    temporal_type: FL
+    standard_name: tendency_of_land_ice_mass_due_to_calving_and_ice_front_melting
+    units: kg s-1
+    comment: spatial integration
+
+  tendligroundf:
+    description: Total grounding line flux
+    dimensions: t
+    variable_type: scalar
+    temporal_type: FL
+    standard_name: tendency_of_grounded_ice_mass
+    units: kg s-1
+    comment: spatial integration
+
+# Temporal Type Legend:
+# ST = Snapshot (end of year for 2D variables, point in time for scalars)
+# FL = Flux (yearly average)
