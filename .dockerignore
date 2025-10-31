@@ -1,0 +1,52 @@
+# Git
+.git
+.github
+.gitignore
+
+# Python
+__pycache__
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv
+venv/
+ENV/
+
+# Cache
+.cache/
+*.parquet
+
+# Development
+*.ipynb
+.ipynb_checkpoints
+interactive_comparison.ipynb
+
+# Documentation
+*.md
+!README.md
+
+# Generated files
+site/
+*.png
+*.html
+!prototype_ui.html
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Development scripts
+plot_file_sizes.py
+generate_html_site.py
+serve_site.py
+
+# Claude
+.claude
