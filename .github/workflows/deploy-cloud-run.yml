@@ -73,8 +73,6 @@ jobs:
             --concurrency 80 \
             --min-instances 0 \
             --max-instances 5 \
-            --port 8080 \
-            --set-env-vars "PORT=8080" \
             --quiet
 
       - name: Get Service URL
