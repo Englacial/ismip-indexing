@@ -36,7 +36,7 @@ app:
     models:
       - "NCAR/CISM"
       - "DOE/MALI"
-      - "AWI/PISM"
+      - "AWI/PISM1"
       - "LSCE/GRISLI2"
     experiments:
       - "exp05"
