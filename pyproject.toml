@@ -16,6 +16,7 @@ dependencies = [
     "netcdf4>=1.7.0",
     "numpy>=2.3.4",
     "pandas>=2.3.3",
+    "panel>=1.5.4",
     "pyarrow>=22.0.0",
     "pyproj>=3.7.0",
     "pyyaml>=6.0.0",

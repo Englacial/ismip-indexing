@@ -1,0 +1,1028 @@
+# ISMIP6 Antarctica Experiments Metadata
+# Source: ISMIP6 Antarctic experiments table
+#
+# Experiment categories:
+# - Initialization: Experiments for model initialization and drift evaluation
+# - Core: Tier 1 experiments (minimum contribution required)
+# - Extended: Tier 2 experiments (highly encouraged)
+# - CMIP6: Tier 2 CMIP6 extension experiments
+# - Ocean Sensitivity: Tier 3 ocean forcing sensitivity experiments
+# - Atmosphere/Ocean Only: Tier 3 experiments with isolated forcings
+# - Ice Shelf Collapse: Tier 3 experiments with ice shelf collapse scenarios
+#
+# Tiers:
+# - Tier 1: Experiments that need to be done (minimum contribution)
+# - Tier 2: Experiments that groups are highly encouraged to do
+# - Tier 3: Experiments that are optional
+
+initialization_experiments:
+  ctrl:
+    description: Unforced control run
+    long_description: Unforced control run starting from initial state, needed for model drift evaluation
+    category: initialization
+    tier: 1
+
+  asmb:
+    description: InitMIP prescribed surface mass balance anomaly
+    long_description: InitMIP prescribed schematic surface mass balance anomaly
+    category: initialization
+    tier: 1
+
+  bsmb:
+    description: InitMIP prescribed basal mass balance anomaly
+    long_description: InitMIP prescribed basal surface mass balance anomaly
+    category: initialization
+    tier: 1
+
+  historical:
+    description: Historical run (initial state to 2015)
+    long_description: Needed to bring model from initial state to projection start date (January 1st 2015)
+    category: initialization
+    tier: 1
+
+  ctrl_proj:
+    description: Unforced control projection run
+    long_description: Unforced control run starting from projection start date (January 2015), needed for model drift evaluation due to historical. Set up is similar to projections but no anomalies (or 0*anomaly)
+    category: initialization
+    tier: 1
+
+projection_experiments:
+  # ==================== CORE EXPERIMENTS (Tier 1) ====================
+
+  exp01:
+    description: NorESM1-M, RCP 8.5, Open, Medium forcing
+    scenario: RCP 8.5
+    aogcm: NorESM1-M
+    grid: Open
+    ocean_forcing: Medium
+    ice_shelf_collapse: false
+    tier: 1
+    category: core
+    notes: Core experiment
+
+  exp02:
+    description: MIROC-ESM-CHEM, RCP 8.5, Open, Medium forcing
+    scenario: RCP 8.5
+    aogcm: MIROC-ESM-CHEM
+    grid: Open
+    ocean_forcing: Medium
+    ice_shelf_collapse: false
+    tier: 1
+    category: core
+
+  exp03:
+    description: NorESM1-M, RCP 2.6, Open, Medium forcing
+    scenario: RCP 2.6
+    aogcm: NorESM1-M
+    grid: Open
+    ocean_forcing: Medium
+    ice_shelf_collapse: false
+    tier: 1
+    category: core
+
+  exp04:
+    description: CCSM4, RCP 8.5, Open, Medium forcing
+    scenario: RCP 8.5
+    aogcm: CCSM4
+    grid: Open
+    ocean_forcing: Medium
+    ice_shelf_collapse: false
+    tier: 1
+    category: core
+
+  exp05:
+    description: NorESM1-M, RCP 8.5, Standard, Medium forcing
+    scenario: RCP 8.5
+    aogcm: NorESM1-M
+    grid: Standard
+    ocean_forcing: Medium
+    ice_shelf_collapse: false
+    tier: 1
+    category: core
+
+  exp06:
+    description: MIROC-ESM-CHEM, RCP 8.5, Standard, Medium forcing
+    scenario: RCP 8.5
+    aogcm: MIROC-ESM-CHEM
+    grid: Standard
+    ocean_forcing: Medium
+    ice_shelf_collapse: false
+    tier: 1
+    category: core
+
+  exp07:
+    description: NorESM1-M, RCP 2.6, Standard, Medium forcing
+    scenario: RCP 2.6
+    aogcm: NorESM1-M
+    grid: Standard
+    ocean_forcing: Medium
+    ice_shelf_collapse: false
+    tier: 1
+    category: core
+
+  exp08:
+    description: CCSM4, RCP 8.5, Standard, Medium forcing
+    scenario: RCP 8.5
+    aogcm: CCSM4
+    grid: Standard
+    ocean_forcing: Medium
+    ice_shelf_collapse: false
+    tier: 1
+    category: core
+
+  exp09:
+    description: NorESM1-M, RCP 8.5, Standard, High forcing
+    scenario: RCP 8.5
+    aogcm: NorESM1-M
+    grid: Standard
+    ocean_forcing: High
+    ice_shelf_collapse: false
+    tier: 1
+    category: core
+
+  exp10:
+    description: NorESM1-M, RCP 8.5, Standard, Low forcing
+    scenario: RCP 8.5
+    aogcm: NorESM1-M
+    grid: Standard
+    ocean_forcing: Low
+    ice_shelf_collapse: false
+    tier: 1
+    category: core
+
+  exp11:
+    description: CCSM4, RCP 8.5, Open, Medium forcing, with ice shelf collapse
+    scenario: RCP 8.5
+    aogcm: CCSM4
+    grid: Open
+    ocean_forcing: Medium
+    ice_shelf_collapse: true
+    tier: 1
+    category: core
+
+  exp12:
+    description: CCSM4, RCP 8.5, Standard, Medium forcing, with ice shelf collapse
+    scenario: RCP 8.5
+    aogcm: CCSM4
+    grid: Standard
+    ocean_forcing: Medium
+    ice_shelf_collapse: true
+    tier: 1
+    category: core
+
+  exp13:
+    description: NorESM1-M, RCP 8.5, Standard, PIGL gamma calibration Medium
+    scenario: RCP 8.5
+    aogcm: NorESM1-M
+    grid: Standard
+    ocean_forcing: PIGL gamma calibration Medium
+    ice_shelf_collapse: false
+    tier: 1
+    category: core
+    notes: PIGL gamma calibration experiment
+
+  # ==================== EXTENDED ENSEMBLE (Tier 2) ====================
+
+  expA1:
+    description: HadGEM2-RS, RCP 8.5, Open, Medium forcing
+    scenario: RCP 8.5
+    aogcm: HadGEM2-RS
+    grid: Open
+    ocean_forcing: Medium
+    ice_shelf_collapse: false
+    tier: 2
+    category: extended
+
+  expA2:
+    description: CSIRO-MK3, RCP 8.5, Open, Medium forcing
+    scenario: RCP 8.5
+    aogcm: CSIRO-MK3
+    grid: Open
+    ocean_forcing: Medium
+    ice_shelf_collapse: false
+    tier: 2
+    category: extended
+
+  expA3:
+    description: IPSL-CM5A-MR, RCP 8.5, Open, Medium forcing
+    scenario: RCP 8.5
+    aogcm: IPSL-CM5A-MR
+    grid: Open
+    ocean_forcing: Medium
+    ice_shelf_collapse: false
+    tier: 2
+    category: extended
+
+  expA4:
+    description: IPSL-CM5A-MR, RCP 2.6, Open, Medium forcing
+    scenario: RCP 2.6
+    aogcm: IPSL-CM5A-MR
+    grid: Open
+    ocean_forcing: Medium
+    ice_shelf_collapse: false
+    tier: 2
+    category: extended
+
+  expA5:
+    description: HadGEM2-RS, RCP 8.5, Standard, Medium forcing
+    scenario: RCP 8.5
+    aogcm: HadGEM2-RS
+    grid: Standard
+    ocean_forcing: Medium
+    ice_shelf_collapse: false
+    tier: 2
+    category: extended
+
+  expA6:
+    description: CSIRO-MK3, RCP 8.5, Standard, Medium forcing
+    scenario: RCP 8.5
+    aogcm: CSIRO-MK3
+    grid: Standard
+    ocean_forcing: Medium
+    ice_shelf_collapse: false
+    tier: 2
+    category: extended
+
+  expA7:
+    description: IPSL-CM5A-MR, RCP 8.5, Standard, Medium forcing
+    scenario: RCP 8.5
+    aogcm: IPSL-CM5A-MR
+    grid: Standard
+    ocean_forcing: Medium
+    ice_shelf_collapse: false
+    tier: 2
+    category: extended
+
+  expA8:
+    description: IPSL-CM5A-MR, RCP 2.6, Standard, Medium forcing
+    scenario: RCP 2.6
+    aogcm: IPSL-CM5A-MR
+    grid: Standard
+    ocean_forcing: Medium
+    ice_shelf_collapse: false
+    tier: 2
+    category: extended
+
+  # ==================== CMIP6 EXTENSION (Tier 2) ====================
+
+  expB1:
+    description: CNRM-CM6-1, SSP5-8.5, Open, Medium forcing
+    scenario: SSP5-8.5
+    aogcm: CNRM-CM6-1
+    grid: Open
+    ocean_forcing: Medium
+    ice_shelf_collapse: false
+    tier: 2
+    category: cmip6
+
+  expB2:
+    description: CNRM-CM6-1, SSP1-2.6, Open, Medium forcing
+    scenario: SSP1-2.6
+    aogcm: CNRM-CM6-1
+    grid: Open
+    ocean_forcing: Medium
+    ice_shelf_collapse: false
+    tier: 2
+    category: cmip6
+
+  expB3:
+    description: UKESM1-0-LL, SSP5-8.5, Open, Medium forcing
+    scenario: SSP5-8.5
+    aogcm: UKESM1-0-LL
+    grid: Open
+    ocean_forcing: Medium
+    ice_shelf_collapse: false
+    tier: 2
+    category: cmip6
+
+  expB4:
+    description: CESM2, SSP5-8.5, Open, Medium forcing
+    scenario: SSP5-8.5
+    aogcm: CESM2
+    grid: Open
+    ocean_forcing: Medium
+    ice_shelf_collapse: false
+    tier: 2
+    category: cmip6
+
+  expB5:
+    description: CNRM-ESM2-1, SSP5-8.5, Open, Medium forcing
+    scenario: SSP5-8.5
+    aogcm: CNRM-ESM2-1
+    grid: Open
+    ocean_forcing: Medium
+    ice_shelf_collapse: false
+    tier: 2
+    category: cmip6
+
+  expB6:
+    description: CNRM-CM6-1, SSP5-8.5, Standard, Medium forcing
+    scenario: SSP5-8.5
+    aogcm: CNRM-CM6-1
+    grid: Standard
+    ocean_forcing: Medium
+    ice_shelf_collapse: false
+    tier: 2
+    category: cmip6
+
+  expB7:
+    description: CNRM-CM6-1, SSP1-2.6, Standard, Medium forcing
+    scenario: SSP1-2.6
+    aogcm: CNRM-CM6-1
+    grid: Standard
+    ocean_forcing: Medium
+    ice_shelf_collapse: false
+    tier: 2
+    category: cmip6
+
+  expB8:
+    description: UKESM1-0-LL, SSP5-8.5, Standard, Medium forcing
+    scenario: SSP5-8.5
+    aogcm: UKESM1-0-LL
+    grid: Standard
+    ocean_forcing: Medium
+    ice_shelf_collapse: false
+    tier: 2
+    category: cmip6
+
+  expB9:
+    description: CESM2, SSP5-8.5, Standard, Medium forcing
+    scenario: SSP5-8.5
+    aogcm: CESM2
+    grid: Standard
+    ocean_forcing: Medium
+    ice_shelf_collapse: false
+    tier: 2
+    category: cmip6
+
+  expB10:
+    description: CNRM-ESM2-1, SSP5-8.5, Standard, Medium forcing
+    scenario: SSP5-8.5
+    aogcm: CNRM-ESM2-1
+    grid: Standard
+    ocean_forcing: Medium
+    ice_shelf_collapse: false
+    tier: 2
+    category: cmip6
+
+  # ==================== ATMOSPHERE/OCEAN ONLY (Tier 3) ====================
+
+  expC1:
+    description: NorESM1-M AO, RCP 8.5, Atmosphere only
+    scenario: RCP 8.5
+    aogcm: NorESM1-M AO
+    grid: null
+    ocean_forcing: Medium
+    ice_shelf_collapse: false
+    tier: 3
+    category: atmosphere_only
+    notes: Atmosphere only forcing
+
+  expC2:
+    description: NorESM1-M OO, RCP 8.5, Open, Ocean only
+    scenario: RCP 8.5
+    aogcm: NorESM1-M OO
+    grid: Open
+    ocean_forcing: Medium
+    ice_shelf_collapse: false
+    tier: 3
+    category: ocean_only
+    notes: Ocean only forcing
+
+  expC3:
+    description: NorESM1-M OO, RCP 8.5, Standard, Ocean only
+    scenario: RCP 8.5
+    aogcm: NorESM1-M OO
+    grid: Standard
+    ocean_forcing: Medium
+    ice_shelf_collapse: false
+    tier: 3
+    category: ocean_only
+    notes: Ocean only forcing
+
+  expC4:
+    description: MIROC-ESM-CHEM AO, RCP 8.5, Atmosphere only
+    scenario: RCP 8.5
+    aogcm: MIROC-ESM-CHEM AO
+    grid: null
+    ocean_forcing: Medium
+    ice_shelf_collapse: false
+    tier: 3
+    category: atmosphere_only
+    notes: Atmosphere only forcing
+
+  expC5:
+    description: MIROC-ESM-CHEM OO, RCP 8.5, Open, Ocean only
+    scenario: RCP 8.5
+    aogcm: MIROC-ESM-CHEM OO
+    grid: Open
+    ocean_forcing: Medium
+    ice_shelf_collapse: false
+    tier: 3
+    category: ocean_only
+    notes: Ocean only forcing
+
+  expC6:
+    description: MIROC-ESM-CHEM OO, RCP 8.5, Standard, Ocean only
+    scenario: RCP 8.5
+    aogcm: MIROC-ESM-CHEM OO
+    grid: Standard
+    ocean_forcing: Medium
+    ice_shelf_collapse: false
+    tier: 3
+    category: ocean_only
+    notes: Ocean only forcing
+
+  expC7:
+    description: NorESM1-M AO, RCP 2.6, Atmosphere only
+    scenario: RCP 2.6
+    aogcm: NorESM1-M AO
+    grid: null
+    ocean_forcing: Medium
+    ice_shelf_collapse: false
+    tier: 3
+    category: atmosphere_only
+    notes: Atmosphere only forcing
+
+  expC8:
+    description: NorESM1-M OO, RCP 2.6, Open, Ocean only
+    scenario: RCP 2.6
+    aogcm: NorESM1-M OO
+    grid: Open
+    ocean_forcing: Medium
+    ice_shelf_collapse: false
+    tier: 3
+    category: ocean_only
+    notes: Ocean only forcing
+
+  expC9:
+    description: NorESM1-M OO, RCP 2.6, Standard, Ocean only
+    scenario: RCP 2.6
+    aogcm: NorESM1-M OO
+    grid: Standard
+    ocean_forcing: Medium
+    ice_shelf_collapse: false
+    tier: 3
+    category: ocean_only
+    notes: Ocean only forcing
+
+  expC10:
+    description: CCSM4 AO, RCP 8.5, Atmosphere only
+    scenario: RCP 8.5
+    aogcm: CCSM4 AO
+    grid: null
+    ocean_forcing: Medium
+    ice_shelf_collapse: false
+    tier: 3
+    category: atmosphere_only
+    notes: Atmosphere only forcing
+
+  expC11:
+    description: CCSM4 OO, RCP 8.5, Open, Ocean only
+    scenario: RCP 8.5
+    aogcm: CCSM4 OO
+    grid: Open
+    ocean_forcing: Medium
+    ice_shelf_collapse: false
+    tier: 3
+    category: ocean_only
+    notes: Ocean only forcing
+
+  expC12:
+    description: CCSM4 OO, RCP 8.5, Standard, Ocean only
+    scenario: RCP 8.5
+    aogcm: CCSM4 OO
+    grid: Standard
+    ocean_forcing: Medium
+    ice_shelf_collapse: false
+    tier: 3
+    category: ocean_only
+    notes: Ocean only forcing
+
+  # ==================== OCEAN SENSITIVITY (Tier 3) ====================
+
+  expD1:
+    description: MIROC-ESM-CHEM, RCP 8.5, Standard, High forcing
+    scenario: RCP 8.5
+    aogcm: MIROC-ESM-CHEM
+    grid: Standard
+    ocean_forcing: High
+    ice_shelf_collapse: false
+    tier: 3
+    category: ocean_sensitivity
+
+  expD2:
+    description: MIROC-ESM-CHEM, RCP 8.5, Standard, Low forcing
+    scenario: RCP 8.5
+    aogcm: MIROC-ESM-CHEM
+    grid: Standard
+    ocean_forcing: Low
+    ice_shelf_collapse: false
+    tier: 3
+    category: ocean_sensitivity
+
+  expD3:
+    description: NorESM1-M, RCP 2.6, Standard, High forcing
+    scenario: RCP 2.6
+    aogcm: NorESM1-M
+    grid: Standard
+    ocean_forcing: High
+    ice_shelf_collapse: false
+    tier: 3
+    category: ocean_sensitivity
+
+  expD4:
+    description: NorESM1-M, RCP 2.6, Standard, Low forcing
+    scenario: RCP 2.6
+    aogcm: NorESM1-M
+    grid: Standard
+    ocean_forcing: Low
+    ice_shelf_collapse: false
+    tier: 3
+    category: ocean_sensitivity
+
+  expD5:
+    description: CCSM4, RCP 8.5, Standard, High forcing
+    scenario: RCP 8.5
+    aogcm: CCSM4
+    grid: Standard
+    ocean_forcing: High
+    ice_shelf_collapse: false
+    tier: 3
+    category: ocean_sensitivity
+
+  expD6:
+    description: CCSM4, RCP 8.5, Standard, Low forcing
+    scenario: RCP 8.5
+    aogcm: CCSM4
+    grid: Standard
+    ocean_forcing: Low
+    ice_shelf_collapse: false
+    tier: 3
+    category: ocean_sensitivity
+
+  expD7:
+    description: HadGEM2-RS, RCP 8.5, Standard, High forcing
+    scenario: RCP 8.5
+    aogcm: HadGEM2-RS
+    grid: Standard
+    ocean_forcing: High
+    ice_shelf_collapse: false
+    tier: 3
+    category: ocean_sensitivity
+
+  expD8:
+    description: HadGEM2-RS, RCP 8.5, Standard, Low forcing
+    scenario: RCP 8.5
+    aogcm: HadGEM2-RS
+    grid: Standard
+    ocean_forcing: Low
+    ice_shelf_collapse: false
+    tier: 3
+    category: ocean_sensitivity
+
+  expD9:
+    description: CSIRO-MK3, RCP 8.5, Standard, High forcing
+    scenario: RCP 8.5
+    aogcm: CSIRO-MK3
+    grid: Standard
+    ocean_forcing: High
+    ice_shelf_collapse: false
+    tier: 3
+    category: ocean_sensitivity
+
+  expD10:
+    description: CSIRO-MK3, RCP 8.5, Standard, Low forcing
+    scenario: RCP 8.5
+    aogcm: CSIRO-MK3
+    grid: Standard
+    ocean_forcing: Low
+    ice_shelf_collapse: false
+    tier: 3
+    category: ocean_sensitivity
+
+  expD11:
+    description: IPSL-CM5A-MR, RCP 8.5, Standard, High forcing
+    scenario: RCP 8.5
+    aogcm: IPSL-CM5A-MR
+    grid: Standard
+    ocean_forcing: High
+    ice_shelf_collapse: false
+    tier: 3
+    category: ocean_sensitivity
+
+  expD12:
+    description: IPSL-CM5A-MR, RCP 8.5, Standard, Low forcing
+    scenario: RCP 8.5
+    aogcm: IPSL-CM5A-MR
+    grid: Standard
+    ocean_forcing: Low
+    ice_shelf_collapse: false
+    tier: 3
+    category: ocean_sensitivity
+
+  expD13:
+    description: CNRM-CM6-1, SSP5-8.5, Standard, High forcing
+    scenario: SSP5-8.5
+    aogcm: CNRM-CM6-1
+    grid: Standard
+    ocean_forcing: High
+    ice_shelf_collapse: false
+    tier: 3
+    category: ocean_sensitivity
+
+  expD14:
+    description: CNRM-CM6-1, SSP5-8.5, Standard, Low forcing
+    scenario: SSP5-8.5
+    aogcm: CNRM-CM6-1
+    grid: Standard
+    ocean_forcing: Low
+    ice_shelf_collapse: false
+    tier: 3
+    category: ocean_sensitivity
+
+  expD15:
+    description: UKESM1-0-LL, SSP5-8.5, Standard, High forcing
+    scenario: SSP5-8.5
+    aogcm: UKESM1-0-LL
+    grid: Standard
+    ocean_forcing: High
+    ice_shelf_collapse: false
+    tier: 3
+    category: ocean_sensitivity
+
+  expD16:
+    description: UKESM1-0-LL, SSP5-8.5, Standard, Low forcing
+    scenario: SSP5-8.5
+    aogcm: UKESM1-0-LL
+    grid: Standard
+    ocean_forcing: Low
+    ice_shelf_collapse: false
+    tier: 3
+    category: ocean_sensitivity
+
+  expD17:
+    description: CESM2, SSP5-8.5, Standard, High forcing
+    scenario: SSP5-8.5
+    aogcm: CESM2
+    grid: Standard
+    ocean_forcing: High
+    ice_shelf_collapse: false
+    tier: 3
+    category: ocean_sensitivity
+
+  expD18:
+    description: CESM2, SSP5-8.5, Standard, Low forcing
+    scenario: SSP5-8.5
+    aogcm: CESM2
+    grid: Standard
+    ocean_forcing: Low
+    ice_shelf_collapse: false
+    tier: 3
+    category: ocean_sensitivity
+
+  # ==================== PIGL GAMMA CALIBRATION (Tier 3) ====================
+
+  expD51:
+    description: NorESM1-M, RCP 8.5, Standard, PIGL gamma calibration Low
+    scenario: RCP 8.5
+    aogcm: NorESM1-M
+    grid: Standard
+    ocean_forcing: PIGL gamma calibration Low
+    ice_shelf_collapse: false
+    tier: 3
+    category: pigl_calibration
+    notes: PIGL gamma calibration Low
+
+  expD52:
+    description: NorESM1-M, RCP 8.5, Standard, PIGL gamma calibration High
+    scenario: RCP 8.5
+    aogcm: NorESM1-M
+    grid: Standard
+    ocean_forcing: PIGL gamma calibration High
+    ice_shelf_collapse: false
+    tier: 3
+    category: pigl_calibration
+    notes: PIGL gamma calibration High
+
+  expD53:
+    description: MIROC-ESM-CHEM, RCP 8.5, Standard, PIGL gamma calibration Medium
+    scenario: RCP 8.5
+    aogcm: MIROC-ESM-CHEM
+    grid: Standard
+    ocean_forcing: PIGL gamma calibration Medium
+    ice_shelf_collapse: false
+    tier: 3
+    category: pigl_calibration
+    notes: PIGL gamma calibration Medium
+
+  expD54:
+    description: MIROC-ESM-CHEM, RCP 8.5, Standard, PIGL gamma calibration Low
+    scenario: RCP 8.5
+    aogcm: MIROC-ESM-CHEM
+    grid: Standard
+    ocean_forcing: PIGL gamma calibration Low
+    ice_shelf_collapse: false
+    tier: 3
+    category: pigl_calibration
+    notes: PIGL gamma calibration Low
+
+  expD55:
+    description: MIROC-ESM-CHEM, RCP 8.5, Standard, PIGL gamma calibration High
+    scenario: RCP 8.5
+    aogcm: MIROC-ESM-CHEM
+    grid: Standard
+    ocean_forcing: PIGL gamma calibration High
+    ice_shelf_collapse: false
+    tier: 3
+    category: pigl_calibration
+    notes: PIGL gamma calibration High
+
+  expD56:
+    description: CCSM4, RCP 8.5, Standard, PIGL gamma calibration Medium
+    scenario: RCP 8.5
+    aogcm: CCSM4
+    grid: Standard
+    ocean_forcing: PIGL gamma calibration Medium
+    ice_shelf_collapse: false
+    tier: 3
+    category: pigl_calibration
+    notes: PIGL gamma calibration Medium
+
+  expD57:
+    description: CCSM4, RCP 8.5, Standard, PIGL gamma calibration Low
+    scenario: RCP 8.5
+    aogcm: CCSM4
+    grid: Standard
+    ocean_forcing: PIGL gamma calibration Low
+    ice_shelf_collapse: false
+    tier: 3
+    category: pigl_calibration
+    notes: PIGL gamma calibration Low
+
+  expD58:
+    description: CCSM4, RCP 8.5, Standard, PIGL gamma calibration High
+    scenario: RCP 8.5
+    aogcm: CCSM4
+    grid: Standard
+    ocean_forcing: PIGL gamma calibration High
+    ice_shelf_collapse: false
+    tier: 3
+    category: pigl_calibration
+    notes: PIGL gamma calibration High
+
+  # ==================== ICE SHELF COLLAPSE (Tier 3) ====================
+
+  expE1:
+    description: NorESM1-M, RCP 8.5, Open, Medium forcing, Ice shelf collapse
+    scenario: RCP 8.5
+    aogcm: NorESM1-M
+    grid: Open
+    ocean_forcing: Medium
+    ice_shelf_collapse: true
+    tier: 3
+    category: ice_shelf_collapse
+
+  expE2:
+    description: MIROC-ESM-CHEM, RCP 8.5, Open, Medium forcing, Ice shelf collapse
+    scenario: RCP 8.5
+    aogcm: MIROC-ESM-CHEM
+    grid: Open
+    ocean_forcing: Medium
+    ice_shelf_collapse: true
+    tier: 3
+    category: ice_shelf_collapse
+
+  expE3:
+    description: HadGEM2-RS, RCP 8.5, Open, Medium forcing, Ice shelf collapse
+    scenario: RCP 8.5
+    aogcm: HadGEM2-RS
+    grid: Open
+    ocean_forcing: Medium
+    ice_shelf_collapse: true
+    tier: 3
+    category: ice_shelf_collapse
+
+  expE4:
+    description: CSIRO-MK3, RCP 8.5, Open, Medium forcing, Ice shelf collapse
+    scenario: RCP 8.5
+    aogcm: CSIRO-MK3
+    grid: Open
+    ocean_forcing: Medium
+    ice_shelf_collapse: true
+    tier: 3
+    category: ice_shelf_collapse
+
+  expE5:
+    description: IPSL-CM5A-MR, RCP 8.5, Open, Medium forcing, Ice shelf collapse
+    scenario: RCP 8.5
+    aogcm: IPSL-CM5A-MR
+    grid: Open
+    ocean_forcing: Medium
+    ice_shelf_collapse: true
+    tier: 3
+    category: ice_shelf_collapse
+
+  expE6:
+    description: NorESM1-M, RCP 8.5, Standard, Medium forcing, Ice shelf collapse
+    scenario: RCP 8.5
+    aogcm: NorESM1-M
+    grid: Standard
+    ocean_forcing: Medium
+    ice_shelf_collapse: true
+    tier: 3
+    category: ice_shelf_collapse
+
+  expE7:
+    description: MIROC-ESM-CHEM, RCP 8.5, Standard, Medium forcing, Ice shelf collapse
+    scenario: RCP 8.5
+    aogcm: MIROC-ESM-CHEM
+    grid: Standard
+    ocean_forcing: Medium
+    ice_shelf_collapse: true
+    tier: 3
+    category: ice_shelf_collapse
+
+  expE8:
+    description: HadGEM2-RS, RCP 8.5, Standard, Medium forcing, Ice shelf collapse
+    scenario: RCP 8.5
+    aogcm: HadGEM2-RS
+    grid: Standard
+    ocean_forcing: Medium
+    ice_shelf_collapse: true
+    tier: 3
+    category: ice_shelf_collapse
+
+  expE9:
+    description: CSIRO-MK3, RCP 8.5, Standard, Medium forcing, Ice shelf collapse
+    scenario: RCP 8.5
+    aogcm: CSIRO-MK3
+    grid: Standard
+    ocean_forcing: Medium
+    ice_shelf_collapse: true
+    tier: 3
+    category: ice_shelf_collapse
+
+  expE10:
+    description: IPSL-CM5A-MR, RCP 8.5, Standard, Medium forcing, Ice shelf collapse
+    scenario: RCP 8.5
+    aogcm: IPSL-CM5A-MR
+    grid: Standard
+    ocean_forcing: Medium
+    ice_shelf_collapse: true
+    tier: 3
+    category: ice_shelf_collapse
+
+  expE11:
+    description: CNRM-CM6-1, SSP5-8.5, Open, Medium forcing, Ice shelf collapse
+    scenario: SSP5-8.5
+    aogcm: CNRM-CM6-1
+    grid: Open
+    ocean_forcing: Medium
+    ice_shelf_collapse: true
+    tier: 3
+    category: ice_shelf_collapse
+
+  expE12:
+    description: UKESM1-0-LL, SSP5-8.5, Open, Medium forcing, Ice shelf collapse
+    scenario: SSP5-8.5
+    aogcm: UKESM1-0-LL
+    grid: Open
+    ocean_forcing: Medium
+    ice_shelf_collapse: true
+    tier: 3
+    category: ice_shelf_collapse
+
+  expE13:
+    description: CESM2, SSP5-8.5, Open, Medium forcing, Ice shelf collapse
+    scenario: SSP5-8.5
+    aogcm: CESM2
+    grid: Open
+    ocean_forcing: Medium
+    ice_shelf_collapse: true
+    tier: 3
+    category: ice_shelf_collapse
+
+  expE14:
+    description: CNRM-ESM2-1, SSP5-8.5, Open, Medium forcing, Ice shelf collapse
+    scenario: SSP5-8.5
+    aogcm: CNRM-ESM2-1
+    grid: Open
+    ocean_forcing: Medium
+    ice_shelf_collapse: true
+    tier: 3
+    category: ice_shelf_collapse
+
+  expE15:
+    description: CNRM-CM6-1, SSP5-8.5, Standard, Medium forcing, Ice shelf collapse
+    scenario: SSP5-8.5
+    aogcm: CNRM-CM6-1
+    grid: Standard
+    ocean_forcing: Medium
+    ice_shelf_collapse: true
+    tier: 3
+    category: ice_shelf_collapse
+
+  expE16:
+    description: UKESM1-0-LL, SSP5-8.5, Standard, Medium forcing, Ice shelf collapse
+    scenario: SSP5-8.5
+    aogcm: UKESM1-0-LL
+    grid: Standard
+    ocean_forcing: Medium
+    ice_shelf_collapse: true
+    tier: 3
+    category: ice_shelf_collapse
+
+  expE17:
+    description: CESM2, SSP5-8.5, Standard, Medium forcing, Ice shelf collapse
+    scenario: SSP5-8.5
+    aogcm: CESM2
+    grid: Standard
+    ocean_forcing: Medium
+    ice_shelf_collapse: true
+    tier: 3
+    category: ice_shelf_collapse
+
+  expE18:
+    description: CNRM-ESM2-1, SSP5-8.5, Standard, Medium forcing, Ice shelf collapse
+    scenario: SSP5-8.5
+    aogcm: CNRM-ESM2-1
+    grid: Standard
+    ocean_forcing: Medium
+    ice_shelf_collapse: true
+    tier: 3
+    category: ice_shelf_collapse
+
+# Scenario descriptions
+scenarios:
+  RCP 2.6:
+    description: Representative Concentration Pathway 2.6
+    long_description: Low emission scenario with radiative forcing peaking at 3 W/m² before 2100 and declining
+    category: RCP
+
+  RCP 8.5:
+    description: Representative Concentration Pathway 8.5
+    long_description: High emission scenario with radiative forcing reaching 8.5 W/m² by 2100
+    category: RCP
+
+  SSP1-2.6:
+    description: Shared Socioeconomic Pathway 1-2.6
+    long_description: Sustainability scenario with low forcing by 2100 (update of RCP2.6 for CMIP6)
+    category: SSP
+
+  SSP5-8.5:
+    description: Shared Socioeconomic Pathway 5-8.5
+    long_description: Fossil-fueled development scenario with high forcing by 2100 (update of RCP8.5 for CMIP6)
+    category: SSP
+
+# AOGCM (Atmosphere-Ocean General Circulation Model) descriptions
+aogcms:
+  NorESM1-M:
+    description: Norwegian Earth System Model (medium resolution)
+    institution: NCC (Norwegian Climate Centre)
+
+  MIROC-ESM-CHEM:
+    description: Model for Interdisciplinary Research on Climate - Earth System Model with Chemistry
+    institution: MIROC (Japan)
+
+  CCSM4:
+    description: Community Climate System Model version 4
+    institution: NCAR (National Center for Atmospheric Research)
+
+  HadGEM2-RS:
+    description: Hadley Centre Global Environmental Model 2 - Earth System
+    institution: MOHC (Met Office Hadley Centre)
+
+  CSIRO-MK3:
+    description: CSIRO Mark 3 coupled climate model
+    institution: CSIRO (Commonwealth Scientific and Industrial Research Organisation)
+
+  IPSL-CM5A-MR:
+    description: Institut Pierre-Simon Laplace Climate Model 5A (medium resolution)
+    institution: IPSL (France)
+
+  CNRM-CM6-1:
+    description: Centre National de Recherches Météorologiques Climate Model 6-1
+    institution: CNRM-CERFACS (France)
+
+  CNRM-ESM2-1:
+    description: Centre National de Recherches Météorologiques Earth System Model 2-1
+    institution: CNRM-CERFACS (France)
+
+  UKESM1-0-LL:
+    description: UK Earth System Model version 1.0 (low resolution)
+    institution: MOHC (Met Office Hadley Centre)
+
+  CESM2:
+    description: Community Earth System Model version 2
+    institution: NCAR (National Center for Atmospheric Research)
+
+# Grid types
+grid_types:
+  Standard:
+    description: Standard ISMIP6 grid
+    long_description: Participant's standard grid configuration
+
+  Open:
+    description: Open boundary grid
+    long_description: Grid with open boundary conditions at the ice sheet margins
