@@ -50,3 +50,6 @@ serve_site.py
 
 # Claude
 .claude
+
+# GCP
+gha-creds-*.json

@@ -25,3 +25,6 @@ ismip6_file_sizes.png
 # OS
 .DS_Store
 Thumbs.db
+
+# GCP
+gha-creds-*.json
