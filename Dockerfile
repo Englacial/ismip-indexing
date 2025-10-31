@@ -12,10 +12,6 @@ RUN uv sync --frozen
 # Copy application files
 COPY . .
 
-# Expose port
-ENV PORT=8080
-EXPOSE 8080
-
 # Run the Panel app
 CMD uv run panel serve app.py \
     --address 0.0.0.0 \
