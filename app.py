@@ -104,7 +104,7 @@ def create_app():
                 state.load_status = status
 
             # Load datasets asynchronously
-            datasets = await load_datasets_async(
+            datasets, time_range = await load_datasets_async(
                 file_list=file_list,
                 variable=state.selected_variable,
                 nan_values=state.get_nan_values_list(),
@@ -121,6 +121,19 @@ def create_app():
                 compare_button.disabled = False
                 return
 
+            # Update time slider if time range is available
+            if time_range is not None:
+                min_year, max_year = time_range
+                state.time_range_min = min_year
+                state.time_range_max = max_year
+                state.time_slider_year = min_year
+                state.time_slider_visible = True
+                print(f"Time slider enabled: {min_year} - {max_year}")
+            else:
+                # No time dimension - hide time slider
+                state.time_slider_visible = False
+                print("No time dimension found - time slider hidden")
+
             # Calculate color ranges
             if state.colormap_mode == 'auto':
                 vmin, vmax, colormap = calculate_global_ranges(datasets)
@@ -136,6 +149,16 @@ def create_app():
 
             # Update state with loaded data
             state.datasets = datasets
+
+            # Update URL parameters to make the view shareable
+            if pn.state.location:
+                pn.state.location.update_query(
+                    var=state.selected_variable,
+                    models=','.join(state.selected_models),
+                    exps=','.join(state.selected_experiments),
+                    cmap=state.colormap_mode,
+                    nan=state.nan_values
+                )
 
             # Success notification
             pn.state.notifications.success(
@@ -159,6 +182,24 @@ def create_app():
 
     # Link button to async callback
     compare_button.on_click(lambda event: asyncio.create_task(on_compare_click(event)))
+
+    # Auto-load default data on first page load
+    async def auto_load_defaults():
+        """Automatically load default selections on first page load."""
+        from config_loader import get_config
+        config = get_config()
+        auto_load = config.get('app.defaults.auto_load', False)
+
+        if auto_load and state.selected_variable and state.selected_models and state.selected_experiments:
+            print("Auto-loading default data...")
+            # Trigger the compare button click
+            await on_compare_click(None)
+
+    # Trigger auto-load on page load using Panel's async execution
+    def schedule_auto_load():
+        pn.state.execute(auto_load_defaults)
+
+    pn.state.onload(schedule_auto_load)
 
     # Create main template
     template = pn.template.FastListTemplate(

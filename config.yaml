@@ -30,16 +30,20 @@ app:
   sidebar:
     width: 340
 
-  # Default selections
+  # Default selections (automatically loaded on first page load)
   defaults:
-    variable: null  # Start with no selection
-    models: []
-    experiments: []
-    time_step_mode: "first"
-    time_step: 0
+    variable: "litempbotgr"  # Basal mass balance flux beneath floating ice
+    models:
+      - "NCAR/CISM"
+      - "DOE/MALI"
+      - "AWI/PISM"
+      - "LSCE/GRISLI2"
+    experiments:
+      - "exp05"
     colormap_mode: "auto"
     nan_values: "0"
     auto_range: true
+    auto_load: true  # Automatically trigger loading on first page load
 
 # Data Loading
 data_loading:
@@ -82,8 +86,8 @@ visualization:
 
   # Color range calculation
   percentile_range:
-    low: 5.0
-    high: 95.0
+    low: 2.0
+    high: 98.0
 
   # Plot tools
   tools:
@@ -191,7 +195,13 @@ debug:
 performance:
   # Cache settings
   cache_file_index: true
-  cache_loaded_datasets: false  # Future: cache datasets in memory
+  cache_loaded_datasets: true
+
+  # Dataset cache configuration
+  dataset_cache:
+    max_items: 10  # Maximum number of NetCDF files to cache in memory
+    policy: "LRU"  # Cache eviction policy: LRU, LFU, or FIFO
+    ttl: 1800  # Time to live in seconds (30 minutes)
 
   # Memory limits
   max_sample_values: 1000000  # For color range calculation

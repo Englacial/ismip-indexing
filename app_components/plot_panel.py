@@ -6,6 +6,7 @@ This module creates the main content area with interactive plots.
 
 import panel as pn
 import holoviews as hv
+from holoviews import streams
 import numpy as np
 from typing import Dict, Tuple, Optional
 import xarray as xr
@@ -100,7 +101,8 @@ def create_linked_plots(
     y_range: Tuple[float, float],
     vmin: Optional[float],
     vmax: Optional[float],
-    colormap: str
+    colormap: str,
+    selected_year: Optional[int] = None
 ) -> hv.Layout:
     """
     Create HoloViews plots with linked axes.
@@ -121,6 +123,8 @@ def create_linked_plots(
         Maximum value for color scale
     colormap : str
         Colormap name
+    selected_year : Optional[int]
+        Year to select from time dimension (finds nearest time step)
 
     Returns
     -------
@@ -133,16 +137,48 @@ def create_linked_plots(
     # Load config
     config = get_config()
 
+    # Get units from first dataset for colorbar label
+    units = None
+    first_data = next(iter(datasets.values()))
+    if hasattr(first_data, 'attrs') and 'units' in first_data.attrs:
+        units = first_data.attrs['units']
+
+    # Create colorbar label with units
+    if units:
+        clabel = f"{variable} ({units})"
+    else:
+        clabel = variable
+
     plots = []
 
     for key, data in datasets.items():
         try:
-            # Get data array (handle 2D and 3D cases)
-            if data.ndim == 2:
+            # Handle time selection if data has time dimension
+            if data.ndim == 3 and 'time' in data.dims:
+                if selected_year is not None:
+                    # Find time step closest to selected year
+                    import cftime
+                    time_coord = data.time
+                    times = time_coord.values
+
+                    # Extract years (handle both cftime and standard datetime)
+                    if len(times) > 0 and isinstance(times[0], cftime.datetime):
+                        years = np.array([t.year for t in times])
+                    else:
+                        import pandas as pd
+                        times_pd = pd.to_datetime(times)
+                        years = np.array([t.year for t in times_pd])
+
+                    # Find closest year
+                    closest_idx = np.argmin(np.abs(years - selected_year))
+                    print(f"  Selecting time step {closest_idx} (year {years[closest_idx]}) for {key}")
+                    plot_data = data.isel(time=closest_idx).values
+                else:
+                    # Default to first time step
+                    plot_data = data.isel(time=0).values
+            elif data.ndim == 2:
+                # 2D data, use as-is
                 plot_data = data.values
-            elif data.ndim == 3:
-                # Take first time step if 3D
-                plot_data = data.isel(time=0).values
             else:
                 print(f"Warning: Unexpected dimensions for {key}: {data.dims}")
                 continue
@@ -165,6 +201,7 @@ def create_linked_plots(
                 clim=(vmin, vmax) if vmin is not None and vmax is not None else None,
                 title=key,
                 colorbar=True,
+                colorbar_opts={'background_fill_alpha': 0, 'title': clabel},
                 tools=config.plot_tools,
                 xlabel='X (m)',
                 ylabel='Y (m)',
@@ -216,11 +253,43 @@ def create_plot_panel(state) -> pn.Column:
         min_height=400
     )
 
+    # Create a Stream to trigger updates without recreating plots
+    time_stream = streams.Params(parameters=[state.param.time_slider_year])
+
+    # Keep reference to current DynamicMap to preserve zoom
+    current_dmap = [None]  # Use list to allow mutation in nested function
+    current_hv_pane = [None]
+
+    def create_plot_function(datasets, variable, x_range, y_range, vmin, vmax, colormap):
+        """Create a function that generates plots based on time stream."""
+        def plot_for_time(time_slider_year):
+            selected_year = int(time_slider_year) if state.time_slider_visible else None
+            return create_linked_plots(
+                datasets=datasets,
+                variable=variable,
+                x_range=x_range,
+                y_range=y_range,
+                vmin=vmin,
+                vmax=vmax,
+                colormap=colormap,
+                selected_year=selected_year
+            )
+        return plot_for_time
+
     def update_plot(*events):
         """Update the plot based on state changes."""
+        # Check what triggered the update
+        is_time_only_update = False
+        if events:
+            event = events[0]
+            if hasattr(event, 'name') and event.name == 'time_slider_year':
+                is_time_only_update = True
+
         if state.is_loading:
             # Show loading state
             plot_container.clear()
+            current_dmap[0] = None
+            current_hv_pane[0] = None
             plot_container.append(create_loading_state(
                 state.load_progress,
                 state.load_status
@@ -228,6 +297,8 @@ def create_plot_panel(state) -> pn.Column:
         elif len(state.datasets) == 0:
             # Show empty state
             plot_container.clear()
+            current_dmap[0] = None
+            current_hv_pane[0] = None
             plot_container.append(create_empty_state())
         else:
             # Show plots
@@ -236,34 +307,48 @@ def create_plot_panel(state) -> pn.Column:
 
                 x_range, y_range = get_coordinate_ranges(state.datasets)
 
-                layout = create_linked_plots(
-                    datasets=state.datasets,
-                    variable=state.selected_variable,
-                    x_range=x_range,
-                    y_range=y_range,
-                    vmin=state.vmin,
-                    vmax=state.vmax,
-                    colormap=state.colormap
+                # If this is just a time slider update, the DynamicMap will handle it automatically
+                if is_time_only_update and current_dmap[0] is not None:
+                    # Stream will automatically trigger update, preserving zoom
+                    return
+
+                # Create new DynamicMap (new data loaded or first time)
+                plot_container.clear()
+
+                plot_func = create_plot_function(
+                    state.datasets,
+                    state.selected_variable,
+                    x_range,
+                    y_range,
+                    state.vmin,
+                    state.vmax,
+                    state.colormap
                 )
 
-                plot_container.clear()
-                plot_container.append(pn.pane.HoloViews(
-                    layout,
+                dmap = hv.DynamicMap(plot_func, streams=[time_stream])
+                current_dmap[0] = dmap
+
+                hv_pane = pn.pane.HoloViews(
+                    dmap,
                     #sizing_mode='stretch_both'
-                ))
+                )
+                current_hv_pane[0] = hv_pane
+                plot_container.append(hv_pane)
 
             except Exception as e:
                 print(f"Error updating plot: {e}")
                 import traceback
                 traceback.print_exc()
                 plot_container.clear()
+                current_dmap[0] = None
+                current_hv_pane[0] = None
                 plot_container.append(pn.pane.Markdown(
                     f'## Error Creating Plots\n\n```\n{str(e)}\n```',
                     styles={'color': 'red'}
                 ))
 
-    # Watch for state changes
-    state.param.watch(update_plot, ['datasets', 'is_loading', 'load_progress', 'load_status'])
+    # Watch for state changes (including time slider)
+    state.param.watch(update_plot, ['datasets', 'is_loading', 'load_progress', 'load_status', 'time_slider_year'])
 
     # Create main panel
     panel = pn.Column(

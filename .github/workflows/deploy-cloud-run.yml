@@ -67,8 +67,8 @@ jobs:
             --region ${{ env.REGION }} \
             --platform managed \
             --allow-unauthenticated \
-            --memory 2Gi \
-            --cpu 2 \
+            --memory 8Gi \
+            --cpu 4 \
             --timeout 3600 \
             --concurrency 80 \
             --min-instances 0 \

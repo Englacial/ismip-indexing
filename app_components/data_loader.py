@@ -8,10 +8,67 @@ with progress updates for the UI.
 import asyncio
 import numpy as np
 import xarray as xr
+import panel as pn
 from typing import Dict, List, Tuple, Callable, Optional
 import traceback
 
 from grid_utils import correct_grid_coordinates
+from config_loader import get_config
+
+
+# Initialize cache configuration
+config = get_config()
+CACHE_ENABLED = config.get('performance.cache_loaded_datasets', True)
+CACHE_MAX_ITEMS = config.get('performance.dataset_cache.max_items', 10)
+CACHE_POLICY = config.get('performance.dataset_cache.policy', 'LRU')
+CACHE_TTL = config.get('performance.dataset_cache.ttl', 1800)
+
+
+@pn.cache(max_items=CACHE_MAX_ITEMS, policy=CACHE_POLICY, ttl=CACHE_TTL)
+def load_single_netcdf_cached(url: str, variable: str) -> xr.DataArray:
+    """
+    Load a single NetCDF file with caching.
+
+    This function is cached to avoid re-loading the same file multiple times.
+    The cache stores the full dataset with all time steps.
+
+    Parameters
+    ----------
+    url : str
+        URL to the NetCDF file
+    variable : str
+        Variable name to extract
+
+    Returns
+    -------
+    xr.DataArray
+        The loaded variable data with all time steps
+    """
+    print(f"  [CACHE MISS] Loading from source: {url}")
+
+    # Load dataset
+    ds = xr.open_dataset(
+        url,
+        engine='h5netcdf',
+        decode_times=True,
+        use_cftime=True
+    )
+
+    # Apply grid correction
+    ds = correct_grid_coordinates(ds, data_var=variable)
+
+    # Get the variable data
+    if variable not in ds:
+        raise ValueError(f"Variable {variable} not found in dataset")
+
+    var_data = ds[variable]
+
+    # Load into memory to avoid keeping file handle open
+    var_data = var_data.load()
+
+    ds.close()
+
+    return var_data
 
 
 async def load_datasets_async(
@@ -20,7 +77,7 @@ async def load_datasets_async(
     nan_values: List[float],
     time_step: Optional[int],
     progress_callback: Callable[[float, str], None]
-) -> Dict[str, xr.DataArray]:
+) -> Tuple[Dict[str, xr.DataArray], Optional[Tuple[int, int]]]:
     """
     Load multiple NetCDF files asynchronously with progress updates.
 
@@ -39,15 +96,16 @@ async def load_datasets_async(
 
     Returns
     -------
-    Dict[str, xr.DataArray]
-        Dictionary of loaded datasets keyed by display name
+    Tuple[Dict[str, xr.DataArray], Optional[Tuple[int, int]]]
+        Dictionary of loaded datasets keyed by display name, and time range (min_year, max_year) if time dimension exists
     """
     datasets = {}
     total_files = len(file_list)
+    all_time_coords = []
 
     if total_files == 0:
         progress_callback(100, "No files to load")
-        return datasets
+        return datasets, None
 
     for i, (key, model, experiment, url, size) in enumerate(file_list):
         try:
@@ -60,30 +118,45 @@ async def load_datasets_async(
                 f"Loading {model} - {experiment}... ({size_mb:.1f} MB)"
             )
 
-            # Load dataset in thread pool to avoid blocking
+            # Load dataset using cached loader or direct load
             print(f"  Opening NetCDF file...")
-            ds = await asyncio.to_thread(
-                xr.open_dataset,
-                url,
-                engine='h5netcdf'
-            )
-            print(f"  ✓ File opened successfully")
 
-            # Apply grid correction if needed
-            print(f"  Applying grid correction...")
-            ds = correct_grid_coordinates(ds, data_var=variable)
-            print(f"  ✓ Grid correction complete")
-
-            # Get the variable data
-            if variable not in ds:
-                print(f"  ⚠ Variable {variable} not found in dataset")
-                progress_callback(
-                    ((i + 1) / total_files) * 100,
-                    f"Warning: {variable} not found in {key}"
+            if CACHE_ENABLED:
+                # Use cached loader (runs in thread pool automatically via pn.cache)
+                print(f"  [Using cache - max {CACHE_MAX_ITEMS} items, policy: {CACHE_POLICY}]")
+                var_data = await asyncio.to_thread(
+                    load_single_netcdf_cached,
+                    url,
+                    variable
                 )
-                continue
+                print(f"  ✓ File loaded (cached or fresh)")
+            else:
+                # Direct load without caching
+                ds = await asyncio.to_thread(
+                    xr.open_dataset,
+                    url,
+                    engine='h5netcdf',
+                    decode_times=True,
+                    use_cftime=True
+                )
+                print(f"  ✓ File opened successfully")
 
-            var_data = ds[variable]
+                # Apply grid correction if needed
+                print(f"  Applying grid correction...")
+                ds = correct_grid_coordinates(ds, data_var=variable)
+                print(f"  ✓ Grid correction complete")
+
+                # Get the variable data
+                if variable not in ds:
+                    print(f"  ⚠ Variable {variable} not found in dataset")
+                    progress_callback(
+                        ((i + 1) / total_files) * 100,
+                        f"Warning: {variable} not found in {key}"
+                    )
+                    continue
+
+                var_data = ds[variable]
+
             print(f"  ✓ Variable '{variable}' extracted, shape: {var_data.shape}")
 
             # Replace specified NaN values with actual NaN
@@ -92,23 +165,14 @@ async def load_datasets_async(
                 for nan_val in nan_values:
                     var_data = var_data.where(var_data != nan_val, np.nan)
 
-            # Select specific time step if requested
-            if time_step is not None and 'time' in var_data.dims:
-                print(f"  Selecting time step: {time_step}")
-                if time_step < 0:
-                    # Negative indices count from end
-                    var_data = var_data.isel(time=time_step)
-                elif time_step < len(var_data.time):
-                    var_data = var_data.isel(time=time_step)
-                else:
-                    print(f"  ⚠ Time step {time_step} out of range (max: {len(var_data.time)-1})")
-                    progress_callback(
-                        ((i + 1) / total_files) * 100,
-                        f"Warning: Time step {time_step} out of range for {key}"
-                    )
-                    continue
-                print(f"  ✓ Time step selected, new shape: {var_data.shape}")
+            # Collect time coordinates if present (for time slider)
+            if 'time' in var_data.dims and 'time' in var_data.coords:
+                time_coord = var_data.time
+                print(f"  Time coordinate found: {len(time_coord)} steps")
+                all_time_coords.append(time_coord)
 
+            # Note: We keep all time steps now - time selection happens in plotting
+            # This allows the time slider to work without reloading data
             datasets[key] = var_data
             print(f"  ✓ Successfully loaded {key}")
 
@@ -125,8 +189,35 @@ async def load_datasets_async(
     print(f"LOADING COMPLETE: Successfully loaded {len(datasets)}/{total_files} datasets")
     print(f"{'='*60}\n")
 
+    # Calculate time range from all loaded datasets
+    time_range = None
+    if all_time_coords:
+        try:
+            import cftime
+            # Extract years from time coordinates (handles both datetime and cftime)
+            all_years = []
+            for time_coord in all_time_coords:
+                times = time_coord.values
+                # Check if cftime objects
+                if len(times) > 0 and isinstance(times[0], cftime.datetime):
+                    years = [t.year for t in times]
+                else:
+                    # Try pandas conversion for standard datetime
+                    import pandas as pd
+                    times_pd = pd.to_datetime(times)
+                    years = [t.year for t in times_pd]
+                all_years.extend(years)
+
+            if all_years:
+                min_year = min(all_years)
+                max_year = max(all_years)
+                time_range = (min_year, max_year)
+                print(f"Time range across all datasets: {min_year} to {max_year}")
+        except Exception as e:
+            print(f"Warning: Could not calculate time range: {e}")
+
     progress_callback(100, f"Loaded {len(datasets)} datasets successfully")
-    return datasets
+    return datasets, time_range
 
 
 def calculate_global_ranges(
