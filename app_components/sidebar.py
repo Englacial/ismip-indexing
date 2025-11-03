@@ -32,6 +32,8 @@ class DataSelectionState(param.Parameterized):
     ])
     nan_values = param.String(default='0')
     auto_range = param.Boolean(default=True)
+    vmin_manual = param.Number(default=None)
+    vmax_manual = param.Number(default=None)
 
     # Loading state
     is_loading = param.Boolean(default=False)
@@ -324,6 +326,23 @@ def create_sidebar(state: DataSelectionState) -> Tuple[pn.Column, pn.widgets.But
         sizing_mode='stretch_width'
     )
 
+    # Manual color range inputs (shown when auto_range is False)
+    vmin_input = pn.widgets.FloatInput(
+        name='Min Value',
+        value=state.vmin_manual,
+        placeholder='Enter minimum',
+        sizing_mode='stretch_width',
+        visible=not state.auto_range
+    )
+
+    vmax_input = pn.widgets.FloatInput(
+        name='Max Value',
+        value=state.vmax_manual,
+        placeholder='Enter maximum',
+        sizing_mode='stretch_width',
+        visible=not state.auto_range
+    )
+
     # Data availability table
     availability_table = pn.pane.HTML(
         '',
@@ -386,6 +405,8 @@ def create_sidebar(state: DataSelectionState) -> Tuple[pn.Column, pn.widgets.But
         colormap_select,
         nan_values_input,
         auto_range_checkbox,
+        vmin_input,
+        vmax_input,
         title='Advanced Options',
         collapsed=True,
         sizing_mode='stretch_width'
@@ -494,6 +515,54 @@ def create_sidebar(state: DataSelectionState) -> Tuple[pn.Column, pn.widgets.But
         time_slider.value = int(state.time_slider_year)
         time_slider.visible = state.time_slider_visible
 
+    def update_manual_range_visibility(*events):
+        """Show/hide manual range inputs based on auto_range checkbox."""
+        vmin_input.visible = not state.auto_range
+        vmax_input.visible = not state.auto_range
+
+    def apply_manual_color_range(*events):
+        """Apply manual color range values when they change (only if auto_range is off)."""
+        if not state.auto_range and len(state.datasets) > 0:
+            # Update vmin/vmax from manual inputs
+            if state.vmin_manual is not None:
+                state.vmin = state.vmin_manual
+            if state.vmax_manual is not None:
+                state.vmax = state.vmax_manual
+
+    def handle_auto_range_toggle(*events):
+        """Handle toggling of auto_range checkbox."""
+        if state.auto_range and len(state.datasets) > 0:
+            # Re-enable auto mode: recalculate color ranges from loaded data
+            from app_components.data_loader import calculate_global_ranges
+            from config_loader import get_config
+            config = get_config()
+            percentile_low = config.get('visualization.percentile_range.low', 5.0)
+            percentile_high = config.get('visualization.percentile_range.high', 95.0)
+
+            if state.colormap_mode == 'auto':
+                vmin, vmax, colormap = calculate_global_ranges(
+                    state.datasets,
+                    percentile_low=percentile_low,
+                    percentile_high=percentile_high
+                )
+                state.vmin = vmin
+                state.vmax = vmax
+                state.colormap = colormap
+            else:
+                # Use user-specified colormap but auto-calculate range
+                vmin, vmax, _ = calculate_global_ranges(
+                    state.datasets,
+                    percentile_low=percentile_low,
+                    percentile_high=percentile_high
+                )
+                state.vmin = vmin
+                state.vmax = vmax
+                state.colormap = state.colormap_mode
+
+            # Update manual inputs to show the auto-calculated values
+            state.vmin_manual = state.vmin
+            state.vmax_manual = state.vmax
+
     # Link widgets to state
     variable_select.link(state, value='selected_variable')
     models_select.param.watch(
@@ -507,6 +576,8 @@ def create_sidebar(state: DataSelectionState) -> Tuple[pn.Column, pn.widgets.But
     colormap_select.link(state, value='colormap_mode')
     nan_values_input.link(state, value='nan_values')
     auto_range_checkbox.link(state, value='auto_range')
+    vmin_input.link(state, value='vmin_manual')
+    vmax_input.link(state, value='vmax_manual')
     # Use value_throttled for the slider to only update on mouse release
     time_slider.link(state, value_throttled='time_slider_year')
 
@@ -519,6 +590,9 @@ def create_sidebar(state: DataSelectionState) -> Tuple[pn.Column, pn.widgets.But
     state.param.watch(update_experiment_descriptions, 'selected_experiments')
     state.param.watch(update_availability_table, ['selected_variable', 'selected_models', 'selected_experiments', 'file_index'])
     state.param.watch(update_time_slider_range, ['time_range_min', 'time_range_max', 'time_slider_year', 'time_slider_visible'])
+    state.param.watch(update_manual_range_visibility, 'auto_range')
+    state.param.watch(handle_auto_range_toggle, 'auto_range')
+    state.param.watch(apply_manual_color_range, ['vmin_manual', 'vmax_manual'])
 
     # Initial updates
     update_variable_options()

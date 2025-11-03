@@ -71,9 +71,6 @@ data_loading:
   # Engine for reading NetCDF files
   netcdf_engine: "h5netcdf"
 
-  # Maximum concurrent file downloads (future use)
-  max_concurrent_downloads: 4
-
 # Visualization
 visualization:
 
@@ -199,9 +196,8 @@ performance:
 
   # Dataset cache configuration
   dataset_cache:
-    max_items: 10  # Maximum number of NetCDF files to cache in memory
+    max_items: 20  # Maximum number of NetCDF files to cache in memory
     policy: "LRU"  # Cache eviction policy: LRU, LFU, or FIFO
-    ttl: 1800  # Time to live in seconds (30 minutes)
 
   # Memory limits
   max_sample_values: 1000000  # For color range calculation

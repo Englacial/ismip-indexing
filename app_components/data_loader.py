@@ -21,10 +21,9 @@ config = get_config()
 CACHE_ENABLED = config.get('performance.cache_loaded_datasets', True)
 CACHE_MAX_ITEMS = config.get('performance.dataset_cache.max_items', 10)
 CACHE_POLICY = config.get('performance.dataset_cache.policy', 'LRU')
-CACHE_TTL = config.get('performance.dataset_cache.ttl', 1800)
 
 
-@pn.cache(max_items=CACHE_MAX_ITEMS, policy=CACHE_POLICY, ttl=CACHE_TTL)
+@pn.cache(max_items=CACHE_MAX_ITEMS, policy=CACHE_POLICY)
 def load_single_netcdf_cached(url: str, variable: str) -> xr.DataArray:
     """
     Load a single NetCDF file with caching.

@@ -280,10 +280,14 @@ def create_plot_panel(state) -> pn.Column:
         """Update the plot based on state changes."""
         # Check what triggered the update
         is_time_only_update = False
+        is_colorrange_only_update = False
         if events:
             event = events[0]
-            if hasattr(event, 'name') and event.name == 'time_slider_year':
-                is_time_only_update = True
+            if hasattr(event, 'name'):
+                if event.name == 'time_slider_year':
+                    is_time_only_update = True
+                elif event.name in ['vmin', 'vmax', 'colormap']:
+                    is_colorrange_only_update = True
 
         if state.is_loading:
             # Show loading state
@@ -310,6 +314,32 @@ def create_plot_panel(state) -> pn.Column:
                 # If this is just a time slider update, the DynamicMap will handle it automatically
                 if is_time_only_update and current_dmap[0] is not None:
                     # Stream will automatically trigger update, preserving zoom
+                    return
+
+                # If only color range/colormap changed, recreate DynamicMap but don't reload data
+                # This preserves zoom and is much faster than reloading
+                if is_colorrange_only_update and current_dmap[0] is not None:
+                    plot_container.clear()
+
+                    plot_func = create_plot_function(
+                        state.datasets,
+                        state.selected_variable,
+                        x_range,
+                        y_range,
+                        state.vmin,
+                        state.vmax,
+                        state.colormap
+                    )
+
+                    dmap = hv.DynamicMap(plot_func, streams=[time_stream])
+                    current_dmap[0] = dmap
+
+                    hv_pane = pn.pane.HoloViews(
+                        dmap,
+                        #sizing_mode='stretch_both'
+                    )
+                    current_hv_pane[0] = hv_pane
+                    plot_container.append(hv_pane)
                     return
 
                 # Create new DynamicMap (new data loaded or first time)
@@ -347,8 +377,8 @@ def create_plot_panel(state) -> pn.Column:
                     styles={'color': 'red'}
                 ))
 
-    # Watch for state changes (including time slider)
-    state.param.watch(update_plot, ['datasets', 'is_loading', 'load_progress', 'load_status', 'time_slider_year'])
+    # Watch for state changes (including time slider and color ranges)
+    state.param.watch(update_plot, ['datasets', 'is_loading', 'load_progress', 'load_status', 'time_slider_year', 'vmin', 'vmax', 'colormap'])
 
     # Create main panel
     panel = pn.Column(

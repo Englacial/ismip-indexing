@@ -34,6 +34,20 @@ def create_app():
         The configured Panel application template
     """
 
+    # Helper function to safely send notifications
+    def safe_notification(level: str, message: str, duration: int = 3000):
+        """Send notification if notifications are available."""
+        if pn.state.notifications is not None:
+            if level == 'success':
+                pn.state.notifications.success(message, duration=duration)
+            elif level == 'warning':
+                pn.state.notifications.warning(message, duration=duration)
+            elif level == 'error':
+                pn.state.notifications.error(message, duration=duration)
+        else:
+            # Fallback to console logging
+            print(f"[{level.upper()}] {message}")
+
     # Initialize application state
     state = DataSelectionState()
 
@@ -69,10 +83,7 @@ def create_app():
             matched_files = state.get_matched_files()
 
             if matched_files.empty:
-                pn.state.notifications.warning(
-                    "No files matched the selection criteria",
-                    duration=3000
-                )
+                safe_notification('warning', "No files matched the selection criteria", 3000)
                 return
 
             # Prepare file list
@@ -113,10 +124,7 @@ def create_app():
             )
 
             if len(datasets) == 0:
-                pn.state.notifications.error(
-                    "Failed to load any datasets",
-                    duration=5000
-                )
+                safe_notification('error', "Failed to load any datasets", 5000)
                 state.is_loading = False
                 compare_button.disabled = False
                 return
@@ -135,17 +143,37 @@ def create_app():
                 print("No time dimension found - time slider hidden")
 
             # Calculate color ranges
-            if state.colormap_mode == 'auto':
-                vmin, vmax, colormap = calculate_global_ranges(datasets)
-                state.vmin = vmin
-                state.vmax = vmax
-                state.colormap = colormap
+            if state.auto_range:
+                # Auto mode - calculate from data
+                if state.colormap_mode == 'auto':
+                    vmin, vmax, colormap = calculate_global_ranges(datasets)
+                    state.vmin = vmin
+                    state.vmax = vmax
+                    state.colormap = colormap
+                else:
+                    # Use user-specified colormap but auto-calculate range
+                    vmin, vmax, _ = calculate_global_ranges(datasets)
+                    state.vmin = vmin
+                    state.vmax = vmax
+                    state.colormap = state.colormap_mode
+
+                # Populate manual inputs with calculated values
+                state.vmin_manual = state.vmin
+                state.vmax_manual = state.vmax
             else:
-                # Use user-specified colormap
-                vmin, vmax, _ = calculate_global_ranges(datasets)
-                state.vmin = vmin
-                state.vmax = vmax
-                state.colormap = state.colormap_mode
+                # Manual mode - use user-specified values
+                # Only update if manual values are provided
+                if state.vmin_manual is not None:
+                    state.vmin = state.vmin_manual
+                if state.vmax_manual is not None:
+                    state.vmax = state.vmax_manual
+
+                # Set colormap
+                if state.colormap_mode == 'auto':
+                    # If colormap is auto but range is manual, use a default
+                    state.colormap = 'viridis'
+                else:
+                    state.colormap = state.colormap_mode
 
             # Update state with loaded data
             state.datasets = datasets
@@ -161,19 +189,13 @@ def create_app():
                 )
 
             # Success notification
-            pn.state.notifications.success(
-                f"Successfully loaded {len(datasets)} dataset(s)",
-                duration=3000
-            )
+            safe_notification('success', f"Successfully loaded {len(datasets)} dataset(s)", 3000)
 
         except Exception as e:
             print(f"Error in compare callback: {e}")
             import traceback
             traceback.print_exc()
-            pn.state.notifications.error(
-                f"Error loading data: {str(e)}",
-                duration=10000
-            )
+            safe_notification('error', f"Error loading data: {str(e)}", 10000)
 
         finally:
             # Reset loading state
