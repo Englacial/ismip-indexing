@@ -196,7 +196,7 @@ performance:
 
   # Dataset cache configuration
   dataset_cache:
-    max_items: 20  # Maximum number of NetCDF files to cache in memory
+    max_items: 12  # Maximum number of NetCDF files to cache in memory
     policy: "LRU"  # Cache eviction policy: LRU, LFU, or FIFO
 
   # Memory limits
