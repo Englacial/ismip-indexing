@@ -16,4 +16,5 @@ COPY . .
 CMD uv run panel serve app.py \
     --address 0.0.0.0 \
     --port ${PORT} \
-    --allow-websocket-origin="*"
+    --allow-websocket-origin="*" \
+    --static-dirs static_content=./static_content

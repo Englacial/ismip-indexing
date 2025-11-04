@@ -17,7 +17,7 @@ data_sources:
 
 # Application Settings
 app:
-  title: "ISMIP6 Interactive Comparison Tool"
+  title: "ISMIP6 Antarctic models comparison tool"
   port: 5006
 
   # Theme configuration

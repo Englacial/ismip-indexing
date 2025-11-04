@@ -9,10 +9,12 @@ import panel as pn
 import holoviews as hv
 import asyncio
 from functools import partial
+from pathlib import Path
 
 from ismip6_index import get_file_index
 from app_components.sidebar import DataSelectionState, create_sidebar
 from app_components.plot_panel import create_plot_panel
+from app_components.markdown_page import create_markdown_page
 from app_components.data_loader import (
     load_datasets_async,
     calculate_global_ranges,
@@ -75,8 +77,15 @@ def create_app():
     sidebar, compare_button = create_sidebar(state)
     plot_panel = create_plot_panel(state)
 
+    # Create tabs for navigation (created early so callback can reference it)
+    tabs = pn.Tabs(
+        dynamic=True,
+        sizing_mode='stretch_both',
+        active=0  # Start on the About tab (first tab, index 0)
+    )
+
     # Compare button callback
-    async def on_compare_click(event):
+    async def on_compare_click(event, is_auto_load=False):
         """Handle compare button click - load data and create plots."""
         try:
             # Get matched files
@@ -191,6 +200,10 @@ def create_app():
             # Success notification
             safe_notification('success', f"Successfully loaded {len(datasets)} dataset(s)", 3000)
 
+            # Switch to Comparison Tool tab to show the results (but not on auto-load)
+            if not is_auto_load:
+                tabs.active = 1  # Index 1 is the Comparison Tool tab
+
         except Exception as e:
             print(f"Error in compare callback: {e}")
             import traceback
@@ -214,8 +227,8 @@ def create_app():
 
         if auto_load and state.selected_variable and state.selected_models and state.selected_experiments:
             print("Auto-loading default data...")
-            # Trigger the compare button click
-            await on_compare_click(None)
+            # Trigger the compare button click (with is_auto_load=True to prevent tab switch)
+            await on_compare_click(None, is_auto_load=True)
 
     # Trigger auto-load on page load using Panel's async execution
     def schedule_auto_load():
@@ -223,11 +236,72 @@ def create_app():
 
     pn.state.onload(schedule_auto_load)
 
+    # Create callbacks to switch tabs
+    def go_to_comparison_tool(event):
+        """Switch to the Comparison Tool tab."""
+        tabs.active = 1  # Index 1 is the Comparison Tool tab
+
+    def go_to_examples(event):
+        """Switch to the Example Comparisons tab."""
+        tabs.active = 2  # Index 2 is the Example Comparisons tab
+
+    # Create markdown pages with action buttons for About page
+    about_page = create_markdown_page(
+        'static_content/about.md',
+        title='About',
+        action_button=[
+            {
+                'label': 'See some examples',
+                'callback': go_to_examples,
+                'button_type': 'success'
+            },
+            {
+                'label': 'Go to Comparison Tool →',
+                'callback': go_to_comparison_tool,
+                'button_type': 'primary'
+            }
+        ]
+    )
+    examples_page = create_markdown_page(
+        'static_content/example_comparisons.md',
+        title='Example Comparisons'
+    )
+
+    # Add pages to tabs
+    tabs.extend([
+        ('About', about_page),
+        ('Comparison Tool', plot_panel),
+        ('Example Comparisons', examples_page),
+    ])
+
+    # Create GitHub link for header
+    github_link = pn.pane.HTML(
+        '<a href="https://github.com/englacial/ismip-indexing" target="_blank" '
+        'style="color: white; text-decoration: none; padding: 10px; '
+        'display: inline-block; opacity: 0.9; transition: opacity 0.2s;" '
+        'title="View on GitHub" '
+        'onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.9">'
+        '<svg style="vertical-align: middle;" height="24" width="24" '
+        'viewBox="0 0 16 16" fill="white">'
+        '<path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 '
+        '0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 '
+        '1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 '
+        '0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 '
+        '1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 '
+        '3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 '
+        '8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>'
+        '</a>',
+        sizing_mode='fixed',
+        width=44,
+        height=40
+    )
+
     # Create main template
     template = pn.template.FastListTemplate(
         title='ISMIP6 Interactive Comparison Tool',
         sidebar=[sidebar],
-        main=[plot_panel],
+        main=[tabs],
+        header=[github_link],
         theme='default',
         accent_base_color='#0072B2',
         header_background='#0072B2',
