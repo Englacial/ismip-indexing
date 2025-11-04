@@ -4,7 +4,7 @@ This page provides some starting points for interesting comparisons to look at.
 
 ## Subglacial temperature
 
-<img src="/static_content/example-temperature.png" alt="Basal temperature comparison" style="width: 100%; max-width: 50em; height: auto;">
+<img src="/static_content/example-temperature.png" alt="Basal temperature comparison screenshot" style="width: 100%; max-width: 50em; height: auto;">
 
 * **Variable:** `litempbotgr` Basal temperature beneath grounded ice sheet (K)
 * **Models:** `AWI/PISM1`, `DOE/MALI`, `LSCE/GRISLI2`, `NCAR/CISM`
@@ -18,7 +18,7 @@ For an accessible introduction to this topic, see Bethan Davie's page on [glacie
 
 ## Grounding line retreat and sub-ice shelf melt
 
-<img src="/static_content/example-floatingmelt.png" alt="Floating basal mass balance comparison" style="width: 100%; max-width: 50em; height: auto;">
+<img src="/static_content/example-floatingmelt.png" alt="Floating basal mass balance comparison screenshot" style="width: 100%; max-width: 50em; height: auto;">
 
 * **Variable:** `libmassbffl` Basal mass balance flux beneath floating ice (kg m-2 s-1)
 * **Model:** `DOE/MALI`
@@ -33,6 +33,8 @@ This is a good comparison to zoom in on, play with the time slider on the left t
 For an accessible introduction to this topic, see Bethan Davie's pages on [grounding lines](https://www.antarcticglaciers.org/glacier-processes/grounding-lines/) and [ice shelves](https://www.antarcticglaciers.org/glaciers-and-climate/changing-antarctica/shrinking-ice-shelves/).
 
 ## Surface mass balance
+
+<img src="/static_content/example-smb.png" alt="Surface mass balance comparison screenshot" style="width: 100%; max-width: 50em; height: auto;">
 
 * **Variable:** `acabf` Surface mass balance flux (kg m-2 s-1)
 * **Models:** `DOE/MALI`, `AWI/PISM1`
