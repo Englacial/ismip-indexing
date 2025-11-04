@@ -4,6 +4,8 @@ This is a very early proof-of-concept visualization tool for exploring and compa
 
 The tool is a prototype article for a larger push we're working on to build backend infrastrcuture for model-data comparisons. If you're intersted in that, feel free to check back here as we add more information or reach out to thomas.teisberg@astera.org.
 
+We hope this tool is useful and intersting to the scientific community. If you find it useful or you find issues, we encourage you to email us or [open an issue](https://github.com/englacial/ismip-indexing/issues/new).
+
 ## More about ISMIP6 and the context behind these models
 
 This tool visualizes only model outputs from the ISMIP6 Antarctica ensemble for now. The general structure of those experiments is described [on the ISMIP6 wiki](https://theghub.org/groups/ismip6/wiki/MainPage/ISMIP6ProjectionsAntarctica). For details, please read the [ISMIP6 Antartica results paper](https://tc.copernicus.org/articles/14/3033/2020/) in *The Cryosphere*.
