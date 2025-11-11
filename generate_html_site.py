@@ -12,7 +12,7 @@ from pathlib import Path
 from typing import Dict, Tuple
 import pandas as pd
 import yaml
-from ismip6_index import get_file_index
+from ismip6_helper import get_file_index
 
 
 # Color thresholds for file counts
@@ -33,8 +33,8 @@ def gs_to_https(gs_url: str) -> str:
 
 
 def load_variable_metadata() -> Dict:
-    """Load variable metadata from table_a1_variables.yaml."""
-    yaml_path = Path(__file__).parent / 'table_a1_variables.yaml'
+    """Load variable metadata from ismip_metadata/variables.yaml."""
+    yaml_path = Path(__file__).parent / 'ismip_metadata' / 'variables.yaml'
     if yaml_path.exists():
         with open(yaml_path, 'r') as f:
             return yaml.safe_load(f)

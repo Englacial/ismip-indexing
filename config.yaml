@@ -12,8 +12,8 @@ data_sources:
   index_cache_file: ".cache/ismip6_index.parquet"
 
   # Metadata files
-  variables_yaml: "table_a1_variables.yaml"
-  experiments_yaml: "ismip6_experiments.yaml"
+  variables_yaml: "ismip_metadata/variables.yaml"
+  experiments_yaml: "ismip_metadata/experiments.yaml"
 
 # Application Settings
 app:

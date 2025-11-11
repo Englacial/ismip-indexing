@@ -10,7 +10,7 @@ from holoviews import streams
 import numpy as np
 from typing import Dict, Tuple, Optional
 import xarray as xr
-from config_loader import get_config
+from ..config_loader import get_config
 
 
 def create_empty_state() -> pn.Column:

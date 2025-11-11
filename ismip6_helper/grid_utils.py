@@ -217,9 +217,10 @@ def correct_grid_coordinates(ds: xr.Dataset, data_var: Optional[str] = None) -> 
 
     # Identify spatial dimensions
     # Common patterns: (time, y, x), (y, x), (time, lat, lon), etc.
+    # Exclude time and also exclude common non-spatial dimensions like 'bnds', 'nv', 'nv4', etc.
     spatial_dims = []
     for dim in dims:
-        if dim not in ['time', 't']:
+        if dim not in ['time', 't', 'bnds', 'nv', 'nv4', 'nb2', 'vertices']:
             spatial_dims.append(dim)
 
     if len(spatial_dims) < 2:
@@ -227,11 +228,18 @@ def correct_grid_coordinates(ds: xr.Dataset, data_var: Optional[str] = None) -> 
         return ds
 
     # Assume last two dimensions are (y, x) or (lat, lon)
+    # But only if they are actual spatial grid dimensions (reasonably large)
     y_dim = spatial_dims[-2]
     x_dim = spatial_dims[-1]
 
-    ny = ds.dims[y_dim]
-    nx = ds.dims[x_dim]
+    # Sanity check: spatial dimensions should have reasonable sizes (> 10)
+    if y_dim in ds.sizes and x_dim in ds.sizes:
+        if ds.sizes[y_dim] < 10 or ds.sizes[x_dim] < 10:
+            warnings.warn(f"Detected dimensions {y_dim}={ds.sizes[y_dim]}, {x_dim}={ds.sizes[x_dim]} seem too small to be spatial dimensions")
+            return ds
+
+    ny = ds.sizes[y_dim]
+    nx = ds.sizes[x_dim]
 
     print(f"⚠️  Grid correction: Dataset missing x/y coordinates for '{data_var}'")
     print(f"   Detected dimensions: {y_dim}={ny}, {x_dim}={nx}")
@@ -275,7 +283,31 @@ def correct_grid_coordinates(ds: xr.Dataset, data_var: Optional[str] = None) -> 
 
     # Add x and y coordinates
     # Map the dimensional names to x and y
-    ds_corrected = ds_corrected.rename({x_dim: 'x', y_dim: 'y'})
+    # Only rename if the dimension names are different from 'x' and 'y'
+    rename_dict = {}
+    if x_dim != 'x':
+        rename_dict[x_dim] = 'x'
+    if y_dim != 'y':
+        rename_dict[y_dim] = 'y'
+
+    if rename_dict:
+        # Before renaming, drop any problematic bound variables that might cause conflicts
+        # These often have dimensions like (y, x, nv4) which can cause issues
+        vars_to_drop = []
+        for var_name in ds_corrected.data_vars:
+            var = ds_corrected[var_name]
+            # Check if this variable uses the dimensions we're about to rename
+            if any(dim in rename_dict for dim in var.dims):
+                # If it's a bounds variable or has extra dimensions beyond the spatial ones,
+                # it might cause conflicts
+                if '_bnds' in var_name or len(var.dims) > 3:
+                    vars_to_drop.append(var_name)
+
+        if vars_to_drop:
+            print(f"   Dropping problematic variables before rename: {vars_to_drop}")
+            ds_corrected = ds_corrected.drop_vars(vars_to_drop)
+
+        ds_corrected = ds_corrected.rename(rename_dict)
 
     # Assign coordinate values
     ds_corrected = ds_corrected.assign_coords({

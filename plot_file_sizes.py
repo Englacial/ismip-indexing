@@ -5,7 +5,7 @@ Create a histogram of file sizes for indexed ISMIP6 files.
 
 import numpy as np
 import matplotlib.pyplot as plt
-from ismip6_index import get_file_index
+from ismip6_helper import get_file_index
 
 
 def format_bytes(size_bytes):

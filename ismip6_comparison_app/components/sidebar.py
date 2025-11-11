@@ -9,7 +9,7 @@ import panel as pn
 import param
 import pandas as pd
 from typing import List, Dict, Any, Tuple
-from config_loader import get_config, load_metadata_yaml
+from ..config_loader import get_config, load_metadata_yaml
 
 
 class DataSelectionState(param.Parameterized):
@@ -61,7 +61,7 @@ class DataSelectionState(param.Parameterized):
         all_variables = self.file_index['variable'].unique().tolist()
 
         # Load variable metadata to filter out scalar variables
-        from config_loader import get_config, load_metadata_yaml
+        from ..config_loader import get_config, load_metadata_yaml
         config = get_config()
         variables_data = load_metadata_yaml(config.variables_yaml)
 
@@ -533,8 +533,8 @@ def create_sidebar(state: DataSelectionState) -> Tuple[pn.Column, pn.widgets.But
         """Handle toggling of auto_range checkbox."""
         if state.auto_range and len(state.datasets) > 0:
             # Re-enable auto mode: recalculate color ranges from loaded data
-            from app_components.data_loader import calculate_global_ranges
-            from config_loader import get_config
+            from .data_loader import calculate_global_ranges
+            from ..config_loader import get_config
             config = get_config()
             percentile_low = config.get('visualization.percentile_range.low', 5.0)
             percentile_high = config.get('visualization.percentile_range.high', 95.0)

@@ -12,15 +12,22 @@ from typing import Any, Dict, Optional
 class Config:
     """Configuration manager for the application."""
 
-    def __init__(self, config_path: str = "config.yaml"):
+    def __init__(self, config_path: Optional[str] = None):
         """
         Initialize configuration from YAML file.
 
         Parameters
         ----------
-        config_path : str
-            Path to configuration YAML file
+        config_path : str, optional
+            Path to configuration YAML file. If not provided, looks for config.yaml
+            in the project root (parent of ismip6_comparison_app directory).
         """
+        if config_path is None:
+            # Look for config.yaml in project root (parent of ismip6_comparison_app)
+            pkg_dir = Path(__file__).parent
+            project_root = pkg_dir.parent
+            config_path = project_root / "config.yaml"
+
         self.config_path = Path(config_path)
         self._config = self._load_config()
 
@@ -96,12 +103,12 @@ class Config:
     @property
     def variables_yaml(self) -> str:
         """Variables YAML file path."""
-        return self.get('data_sources.variables_yaml', 'table_a1_variables.yaml')
+        return self.get('data_sources.variables_yaml', 'ismip_metadata/variables.yaml')
 
     @property
     def experiments_yaml(self) -> str:
         """Experiments YAML file path."""
-        return self.get('data_sources.experiments_yaml', 'ismip6_experiments.yaml')
+        return self.get('data_sources.experiments_yaml', 'ismip_metadata/experiments.yaml')
 
     @property
     def app_title(self) -> str:
@@ -277,7 +284,7 @@ def load_metadata_yaml(yaml_path: str) -> Dict[str, Any]:
     Parameters
     ----------
     yaml_path : str
-        Path to YAML file
+        Path to YAML file (relative to project root)
 
     Returns
     -------
@@ -286,8 +293,14 @@ def load_metadata_yaml(yaml_path: str) -> Dict[str, Any]:
     """
     yaml_file = Path(yaml_path)
 
+    # If path is relative, resolve from project root
+    if not yaml_file.is_absolute():
+        pkg_dir = Path(__file__).parent
+        project_root = pkg_dir.parent
+        yaml_file = project_root / yaml_path
+
     if not yaml_file.exists():
-        print(f"Warning: Metadata file not found: {yaml_path}")
+        print(f"Warning: Metadata file not found: {yaml_file}")
         return {}
 
     with open(yaml_file, 'r') as f:

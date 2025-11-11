@@ -11,11 +11,11 @@ import asyncio
 from functools import partial
 from pathlib import Path
 
-from ismip6_index import get_file_index
-from app_components.sidebar import DataSelectionState, create_sidebar
-from app_components.plot_panel import create_plot_panel
-from app_components.markdown_page import create_markdown_page
-from app_components.data_loader import (
+from ismip6_helper import get_file_index
+from .components.sidebar import DataSelectionState, create_sidebar
+from .components.plot_panel import create_plot_panel
+from .components.markdown_page import create_markdown_page
+from .components.data_loader import (
     load_datasets_async,
     calculate_global_ranges,
     get_coordinate_ranges
@@ -221,7 +221,7 @@ def create_app():
     # Auto-load default data on first page load
     async def auto_load_defaults():
         """Automatically load default selections on first page load."""
-        from config_loader import get_config
+        from .config_loader import get_config
         config = get_config()
         auto_load = config.get('app.defaults.auto_load', False)
 
@@ -246,8 +246,9 @@ def create_app():
         tabs.active = 2  # Index 2 is the Example Comparisons tab
 
     # Create markdown pages with action buttons for About page
+    static_dir = Path(__file__).parent / 'static_content'
     about_page = create_markdown_page(
-        'static_content/about.md',
+        str(static_dir / 'about.md'),
         title='About',
         action_button=[
             {
@@ -263,7 +264,7 @@ def create_app():
         ]
     )
     examples_page = create_markdown_page(
-        'static_content/example_comparisons.md',
+        str(static_dir / 'example_comparisons.md'),
         title='Example Comparisons'
     )
 
