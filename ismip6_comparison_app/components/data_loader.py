@@ -13,7 +13,7 @@ from typing import Dict, List, Tuple, Callable, Optional
 import traceback
 
 from ismip6_helper import correct_grid_coordinates
-from ..config_loader import get_config
+from ismip6_comparison_app.config_loader import get_config
 
 
 # Initialize cache configuration

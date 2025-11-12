@@ -10,7 +10,7 @@ from holoviews import streams
 import numpy as np
 from typing import Dict, Tuple, Optional
 import xarray as xr
-from ..config_loader import get_config
+from ismip6_comparison_app.config_loader import get_config
 
 
 def create_empty_state() -> pn.Column:
@@ -307,7 +307,7 @@ def create_plot_panel(state) -> pn.Column:
         else:
             # Show plots
             try:
-                from .data_loader import get_coordinate_ranges
+                from ismip6_comparison_app.components.data_loader import get_coordinate_ranges
 
                 x_range, y_range = get_coordinate_ranges(state.datasets)
 

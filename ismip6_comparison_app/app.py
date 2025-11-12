@@ -12,10 +12,10 @@ from functools import partial
 from pathlib import Path
 
 from ismip6_helper import get_file_index
-from .components.sidebar import DataSelectionState, create_sidebar
-from .components.plot_panel import create_plot_panel
-from .components.markdown_page import create_markdown_page
-from .components.data_loader import (
+from ismip6_comparison_app.components.sidebar import DataSelectionState, create_sidebar
+from ismip6_comparison_app.components.plot_panel import create_plot_panel
+from ismip6_comparison_app.components.markdown_page import create_markdown_page
+from ismip6_comparison_app.components.data_loader import (
     load_datasets_async,
     calculate_global_ranges,
     get_coordinate_ranges
@@ -221,7 +221,7 @@ def create_app():
     # Auto-load default data on first page load
     async def auto_load_defaults():
         """Automatically load default selections on first page load."""
-        from .config_loader import get_config
+        from ismip6_comparison_app.config_loader import get_config
         config = get_config()
         auto_load = config.get('app.defaults.auto_load', False)
 
