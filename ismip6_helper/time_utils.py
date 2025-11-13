@@ -6,6 +6,7 @@ to ensure CF-compliance and compatibility with xarray's time decoding.
 """
 
 import re
+import warnings
 import xarray as xr
 from typing import Optional
 
@@ -191,7 +192,12 @@ def open_ismip6_dataset(
                     ds = xr.decode_cf(ds, use_cftime=True)
 
             if convert_cftime_to_datetime:
-                ds['time'] = ds.indexes['time'].to_datetimeindex(time_unit='us')
+                # Suppress warning about converting from non-standard calendars
+                with warnings.catch_warnings():
+                    warnings.filterwarnings('ignore',
+                                          message='Converting a CFTimeIndex with dates from a non-standard calendar',
+                                          category=RuntimeWarning)
+                    ds['time'] = ds.indexes['time'].to_datetimeindex(time_unit='ns')
 
             return ds
 
