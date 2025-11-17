@@ -26,7 +26,8 @@ pn.extension(sizing_mode='stretch_width', notifications=True)
 hv.extension('bokeh')
 
 # Add Plausible analytics JavaScript to the head section
-pn.config.js_files['plausible'] = "/static_content/plausible-analytics.js"
+pn.config.js_files['plausible_1'] = "https://plausible.io/js/pa-KJ8rexVPjLBvH_t7YFmax.js"
+pn.config.js_files['plausible_2'] = "/static_content/plausible-analytics.js"
 
 
 def create_app():
