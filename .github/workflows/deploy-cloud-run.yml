@@ -67,12 +67,10 @@ jobs:
             --region ${{ env.REGION }} \
             --platform managed \
             --allow-unauthenticated \
-            --memory 16Gi \
-            --cpu 4 \
+            --memory 8Gi \
+            --cpu 2 \
             --timeout 3600 \
             --concurrency 80 \
-            --min-instances 0 \
-            --max-instances 5 \
             --quiet
 
       - name: Get Service URL
