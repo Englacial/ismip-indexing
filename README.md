@@ -31,7 +31,7 @@ If you want to run a local copy, you can setup the tool like this:
 uv sync
 
 # Launch web app
-uv run panel serve app.py --show --static-dirs static_content=./static_content
+uv run panel serve ismip6_comparison_app/app.py --show --static-dirs static_content=./ismip6_comparison_app/static_content
 ```
 
 Visit `http://localhost:5006/app` to explore the data interactively.

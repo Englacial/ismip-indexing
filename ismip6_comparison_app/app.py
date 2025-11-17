@@ -25,16 +25,8 @@ from ismip6_comparison_app.components.data_loader import (
 pn.extension(sizing_mode='stretch_width', notifications=True)
 hv.extension('bokeh')
 
-# Add Plausible analytics to head section
-plausible_analytics = """
-<!-- Privacy-friendly analytics by Plausible -->
-<script async src="https://plausible.io/js/pa-KJ8rexVPjLBvH_t7YFmax.js"></script>
-<script>
-  window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
-  plausible.init()
-</script>
-"""
-pn.config.raw_css.append(plausible_analytics)
+# Add Plausible analytics JavaScript to the head section
+pn.config.js_files['plausible'] = "/static_content/plausible-analytics.js"
 
 
 def create_app():
